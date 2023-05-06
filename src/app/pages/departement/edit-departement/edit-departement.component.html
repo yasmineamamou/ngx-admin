@@ -1,0 +1,35 @@
+<div>
+    <h1>Modification de la département</h1>
+    <hr>
+</div>
+<form>
+    <table>
+        <tr>
+          <td>
+            <div class="form-group">
+              <label for="name">Nom</label>
+              <input id="name" type="text" class="form-control" [(ngModel)]="dep_nom" name="newDepName">
+            </div>
+          </td>
+        </tr>
+          <tr>
+            <td>
+              <div class="form-group">
+                <label for="name">Liste des societés:</label>
+                <ul>
+                  <li *ngFor="let societe of societiesList">
+                    <input type="radio" name="societe" [id]="societe.id" [value]="societe.id" [checked]="societe.checked" (change)="selectSociete(societe)" />&nbsp; {{societe.attributes.Nom}}
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <div>
+                    <button type="button" class="btn btn-success" (click)="editDepartement()">Enregistrer</button>
+                </div>
+            </td>
+          </tr>
+    </table>
+</form>

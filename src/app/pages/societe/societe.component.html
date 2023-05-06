@@ -1,0 +1,31 @@
+<div class="title">
+  <h3>liste des sociétés</h3>
+  <button style="float: right;" type="button" class="btn btn-success" mat-raised-button (click)="openAddPopup()"><i class="bi bi-plus-circle"></i> Ajouter</button>
+</div>
+<table class="table full-width">
+  <tr>
+    <th>Nom des sociétés</th>
+    <th>Description</th>
+    <th>Type de société</th>
+  </tr>
+  <tr *ngFor="let soci of societe_nom | paginate: { itemsPerPage: 10, currentPage: p }">
+    <td>
+      <span>{{soci.attributes.Nom}}</span>
+    </td>
+    <td>
+      <span>{{soci.attributes.Description}}</span>
+    </td>
+    <td>
+      <span *ngIf="soci.typesList && soci.typesList.attributes.type">{{soci.typesList.attributes.type}}</span>
+    </td>
+    <td>
+      <div class="text-center">
+        <button type="button" class="icon-button" (click)="edit(soci)"><i class="bi bi-pencil"></i></button>
+        <button type="button" class="icon-button ml-auto" (click)="deleteSociete(soci.id)"><i class="bi bi-trash"></i></button>
+      </div>
+    </td>
+  </tr>
+</table>
+<div class="text-center">
+  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+</div>

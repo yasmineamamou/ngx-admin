@@ -1,0 +1,63 @@
+<div>
+  <h1>Modifier le Projet</h1>
+  <hr>
+</div>
+<form>
+  <table>
+    <tr>
+        <td colspan="3">
+          <div class="form-group">
+            <label for="name">Nom de Projet</label>
+            <input id="name" type="text" class="form-control" [(ngModel)]="projet_nom" name="newProjetName">
+          </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+          <div class="form-group">
+            <label for="name">Description</label>
+            <textarea class="Description" id="newProjetDescription" [(ngModel)]="projet_description" name="newProjetDescription" placeholder="Description"></textarea>
+          </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <ul>
+                <li class="liste">
+                  <div class="form-group">
+                    <label for="name">Date debut</label>
+                    <input id="name" type="date" class="form-control" [(ngModel)]="projet_debut" name="newProjetdebut">
+                  </div>
+        </li>
+        <li class="liste">
+          <div class="form-group">
+            <label for="name">Date Fin</label>
+            <input id="name" type="date" class="form-control" [(ngModel)]="projet_fin" name="newProjetFin">
+          </div>
+        </li>
+        <li class="liste">
+          <div class="form-group">
+            <label for="name">coût</label>
+            <input id="name" type="number" class="form-control" [(ngModel)]="projet_cout" name="newProjetCout">
+          </div>
+            </li>
+          </ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="societe">
+          <div>
+            <label for="name">Société bénificiaire:</label>
+            <ul>
+                <li *ngFor="let societe of societesList" [for]="societe.id">
+                    <input type="radio" name="societe" [id]="societe.id" [value]="societe.id" [checked]="societe.checked" (click)="selectSociete(societe)" />&nbsp;{{societe.attributes.Nom}}
+                </li>
+            </ul>
+        </div>
+        <div>
+          <button style="margin-left: 22px;" type="button" class="btn btn-success" (click)="editProjet()">Enregistrer</button>
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>

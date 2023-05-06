@@ -1,0 +1,62 @@
+<div>
+    <h1>Crée un Projet</h1>
+    <hr>
+</div>
+<form>
+    <table>
+        <tr>
+            <td colspan="3">
+                <div class="form-group">
+                    <label for="name">Nom</label>
+                    <input id="name" type="text" class="form-control" [(ngModel)]="newProjetName" name="newProjetName" placeholder="Nom de projet">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div class="form-group">
+                    <label for="name">Description</label>
+                    <textarea class="Description" id="newProjetDescription" [(ngModel)]="newProjetDescription" name="newProjetDescription" placeholder="Description"></textarea>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <ul>
+                    <li class="liste">
+                <div class="form-group">
+                    <label for="name">Date debut</label>
+                    <input id="name" type="date" class="form-control" [(ngModel)]="newProjetDebut" name="newProjetDebut">
+                </div>
+            </li>
+            <li class="liste">
+                <div class="form-group">
+                    <label for="name">Date fin</label>
+                    <input id="name" type="date" class="form-control" [(ngModel)]="newProjetFin" name="newProjetFin">
+                </div>
+            </li>
+            <li class="liste">
+                <div class="form-group">
+                    <label for="name">coût</label>
+                    <input id="name" type="number" class="form-control" [(ngModel)]="newProjetCout" name="newProjetCout" placeholder="coût">
+                </div>
+                </li></ul>
+            </td>
+        </tr>
+        <tr>
+            <td class="societe">
+                <div>
+                    <label for="name">Société bénificiaire:</label>
+                    <ul>
+                        <li *ngFor="let  soci of soci_nom" [for]="soci.id">
+                            <input type="radio" name="societe" [id]="soci.id" [value]="soci.id" [checked]="soci.checked" (change)="selectSociete(soci)" />&nbsp;{{soci.attributes.Nom}}
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <button style="margin-left: 22px;" type="button" class="btn btn-success" (click)="addProjet()">Enregistrer</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>

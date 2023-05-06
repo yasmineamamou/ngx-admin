@@ -1,0 +1,43 @@
+<div>
+  <h1>Crée une nouvelle societe</h1>
+  <hr>
+</div>
+<form>
+  <table>
+    <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Nom</label>
+          <input  required id="name" type="text" class="form-control" [(ngModel)]="newSocieteName" name="newSocieteName" placeholder="Nom de société">
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="form-group">
+          <tr><label for="name">Description</label></tr>
+          <textarea required class="Description" id="newSocieteDescription" [(ngModel)]="newSocieteDescription" name="newSocieteDescription" placeholder="Description de société"></textarea>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Types de société</label>
+          <ul>
+            <li *ngFor="let typ of type_nom" [for]="typ.id">
+                <input required type="radio" name="type" [id]="typ.id" [value]="typ.id" [checked]="typ.checked" (change)="selectType(typ)" />&nbsp; {{typ.attributes.type}}
+            </li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>
+          <button type="button" class="btn btn-success" (click)="addSociete()" [disabled]="!newSocieteName || !newSocieteDescription|| !selectedTypeId" >Enregistrer</button>
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>

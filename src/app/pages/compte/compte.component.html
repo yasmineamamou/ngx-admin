@@ -1,0 +1,39 @@
+<div class="title">
+  <h3>liste des Comptes</h3>
+  <button style="float: right;" type="button" class="btn btn-success" mat-raised-button (click)="openAddPopup()"><i class="bi bi-plus-circle"></i> Ajouter</button>
+</div>
+<table class="table full-width">
+  <tr class="titre">
+    <th>Nom d'utilisateur</th>
+    <th>Email</th>
+    <th>N° de téléphone</th>
+    <th>Société</th>
+    <th>Département</th>
+  </tr>
+  <tr *ngFor="let comp of compte_nom  | paginate: { itemsPerPage: 10, currentPage: p }">
+    <td>
+      <span>{{comp.attributes.user_name}}</span>
+    </td>
+    <td>
+      <span>{{comp.attributes.email}}</span>
+    </td>
+    <td>
+      <span>{{comp.attributes.telephone}}</span>
+    </td>
+    <td>
+      <span *ngIf="comp.societesList && comp.societesList.attributes.Nom">{{comp.societesList.attributes.Nom}}</span>
+    </td>
+    <td>
+      <span *ngIf="comp.departementsList && comp.departementsList.attributes.nom">{{comp.departementsList.attributes.nom}}</span>
+    </td>
+    <td>
+      <div class="text-center">
+        <button type="button" class="icon-button" (click)="edit(comp)"><i class="bi bi-pencil"></i></button>
+        <button type="button" class="icon-button ml-auto" (click)="deleteCompte(comp.id)"><i class="bi bi-trash"></i></button>
+      </div>
+    </td>
+  </tr>
+</table>
+<div class="text-center">
+  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+</div>

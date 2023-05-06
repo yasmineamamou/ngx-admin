@@ -1,0 +1,59 @@
+<div>
+    <h1>Modification de la compte</h1>
+    <hr>
+</div>
+<form>
+    <table>
+      <tr>
+        <td>
+          <div class="form-group">
+            <label for="name">Nom d'utilisateur</label>
+            <input id="name" type="text" class="form-control" [(ngModel)]="compte_user_name" name="newCompName">
+          </div>
+        </td>
+        <td>
+          <div class="form-group">
+            <label for="name">N° de téléphone</label>
+            <input id="name" type="tel" class="form-control" [(ngModel)]="compte_telephone" name="newCompTelephone">
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div class="form-group">
+            <label for="name">Email</label>
+            <input style="width: 738px;" id="name" type="email" class="form-control" [(ngModel)]="compte_email" name="newCompEmail">
+          </div>
+        </td>
+      </tr>
+      <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Liste des Sociétés</label>
+          <ul>
+            <li *ngFor="let societe of societesList">
+              <input type="radio" name="societe" [id]="societe.id" [value]="societe.id" [checked]="societe.checked" (change)="selectSociete(societe)" />&nbsp; {{societe.attributes.Nom}}
+          </li>
+          </ul>
+        </div>
+      </td>
+      <td>
+        <div class="form-group">
+          <label for="name">Liste des Départements</label>
+          <ul>
+            <li *ngFor="let departement of departementsList">
+              <input type="radio" [id]="departement.id" name="departement" [value]="departement.id" [checked]="departement.checked" (change)="selectDepartement(departement)" />&nbsp; {{departement.attributes.nom}}
+            </li>
+          </ul>
+        </div>
+      </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div>
+            <button type="button" class="btn btn-success" (click)="editCompte()">Enregistrer</button>
+        </div>
+        </td>
+      </tr>
+    </table>
+</form>

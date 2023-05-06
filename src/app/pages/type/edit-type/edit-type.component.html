@@ -1,0 +1,21 @@
+<div>
+    <h1>Modification de la Type de société</h1>
+    <hr>
+</div>
+<form>
+    <table>
+        <tr>
+            <td>
+                <div class="form-group">
+                    <label for="name">Type de société</label>
+                    <input id="name" type="text" class="form-control" [(ngModel)]="type_nom" name="newTypName">
+                </div>
+            </td>
+            <td>
+                <div>
+                    <button type="button" class="btn btn-success" (click)="editType()">Enregistrer</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>

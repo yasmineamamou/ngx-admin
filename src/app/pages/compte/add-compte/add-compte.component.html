@@ -1,0 +1,65 @@
+<div>
+  <h1>Crée un nouveau Compte</h1>
+  <hr>
+</div>
+<form>
+  <table>
+    <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Nom d'utilisateur</label>
+          <input required id="name" type="text" class="form-control" [(ngModel)]="newCompteNom" name="newCompteNom" placeholder="Nom d'utilisateur">
+        </div>
+      </td>
+      <td>
+        <div class="form-group">
+          <label for="name">N° de téléphone</label>
+          <input required id="name" type="tel" class="form-control" [(ngModel)]="newCompteTel" name="newCompteTel" placeholder="N°  de téléphone">
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Email</label>
+          <input required id="name" type="email" class="form-control" [(ngModel)]="newCompteEmail" name="newCompteEmail" placeholder="Email">
+        </div>
+      </td>
+      <td>
+        <div class="form-group">
+          <label for="name">Mot de passe</label>
+          <input required id="name" type="password" class="form-control" [(ngModel)]="newComptePassword" name="newComptePassword" placeholder="Mot de passe">
+        </div>
+      </td>
+    </tr>
+    <tr>
+    <td>
+      <div class="form-group">
+        <label for="name">Liste des Sociétés</label>
+        <ul>
+          <li *ngFor="let  soci of societe_nom" [for]="soci.id">
+            <input required type="radio" [id]="soci.id" [value]="soci.id" name="societe" [checked]="soci.checked" (change)="selectSociete(soci)" />&nbsp;{{soci.attributes.Nom}}
+          </li>
+        </ul>
+      </div>
+    </td>
+    <td>
+      <div class="form-group">
+        <label for="name">Liste des Départements</label>
+        <ul>
+          <li *ngFor="let dep of dep_nom" [for]="dep.id">
+            <input required type="radio" [id]="dep.id" [value]="dep.id" name="departement" [checked]="dep.checked" (change)="selectDepartement(dep)" />&nbsp; {{dep.attributes.nom}}
+          </li>
+        </ul>
+      </div>
+    </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <div>
+          <button type="button" class="btn btn-success" (click)="addCompte()" [disabled]="!newCompteNom || !newCompteEmail || !newComptePassword || !newCompteTel || !selectedSocieteId || !selectedDepartementId">Enregistrer</button>
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>

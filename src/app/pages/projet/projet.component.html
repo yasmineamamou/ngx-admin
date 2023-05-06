@@ -1,0 +1,43 @@
+<div class="title">
+    <h3>liste des Projets</h3>
+    <button style="float: right;" type="button" class="btn btn-success" mat-raised-button (click)="openAddPopup()"><i class="bi bi-plus-circle"></i> Ajouter</button>
+  </div>
+<table class="table full-width">
+    <tr>
+      <th>Projets</th>
+      <th>Description</th>
+      <th>Date debut</th>
+      <th>Date fin</th>
+      <th>coût</th> 
+      <th>Société bénificiaire</th>
+    </tr>
+    <tr *ngFor="let projet of projet_nom | paginate: { itemsPerPage: 10, currentPage: p }">
+      <td>
+        <span>{{projet.attributes.nom_projet}}</span>
+      </td>
+      <td>
+        <span>{{projet.attributes.Description}}</span>
+      </td>
+      <td>
+        <span>{{projet.attributes.date_debut}}</span>
+      </td>
+      <td>
+        <span>{{projet.attributes.date_fin}}</span>
+      </td>
+      <td>
+        <span>{{projet.attributes.estimation_cout}}</span>
+      </td>
+      <td>
+        <span *ngIf="projet.societesList && projet.societesList.attributes.Nom">{{projet.societesList.attributes.Nom}}</span>
+      </td>
+      <td>
+        <div class="text-center">
+          <button type="button" class="icon-button" (click)="edit(projet)"><i class="bi bi-pencil"></i></button>
+          <button type="button" class="icon-button ml-auto" (click)="deleteProjet(projet.id)"><i class="bi bi-trash"></i></button>
+        </div>
+      </td>
+    </tr>
+</table>
+<div class="text-center">
+  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+</div>

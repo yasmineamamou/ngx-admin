@@ -1,0 +1,96 @@
+<div>
+    <h1>Crée une nouvelle Tache</h1>
+    <hr>
+</div>
+<form>
+    <table>
+        <tr>
+            <td>
+                <div class="form-group">
+                    <label for="name">Nom</label>
+                    <input style="width: 825px;" id="name" type="text" class="form-control" [(ngModel)]="newTacheName" name="newTacheName" placeholder="Nom de tache">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="form-group">
+                    <tr><label for="name">Description</label></tr>
+                    <textarea class="Description" id="newTacheDescription" [(ngModel)]="newTacheDescription" name="newTacheDescription" placeholder="Description"></textarea>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+            <tr>
+                <td class="liste">
+                    <div class="form-group">
+                        <label for="name">Nombre de Tache</label>
+                        <input id="name" type="number" class="form-control" [(ngModel)]="newTacheNbre" name="newTacheNbre" placeholder="Nombre de Tache">
+                    </div>
+                </td>
+                <td class="liste">
+                    <div class="form-group">
+                        <label for="name">coût unitaire</label>
+                        <input id="name" type="number" class="form-control" [(ngModel)]="newTacheCout" name="newTacheCout" placeholder="coût unitaire">
+                    </div>
+                </td>
+            </tr>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <ul>
+                    <li class="liste">
+                        <div>
+                            <label class="type" for="name">Type de Tache</label>
+                            <ul>
+                                <li>
+                                    <input type="radio" id="Journalier" name="option" value="Journalier" [(ngModel)]="newTacheType">
+                                    <label>Journalier</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="Hebdomadaire" name="option" value="Hebdomadaire" [(ngModel)]="newTacheType">
+                                    <label>Hebdomadaire</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="Mensuel" name="option" value="Mensuel" [(ngModel)]="newTacheType">
+                                    <label>Mensuel</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="Trimestriel" name="option" value="Trimestriel" [(ngModel)]="newTacheType">
+                                    <label>Trimestriel</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="Semestriel" name="option" value="Semestriel" [(ngModel)]="newTacheType">
+                                    <label>Semestriel</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="Annuel" name="option" value="Annuel" [(ngModel)]="newTacheType">
+                                    <label>Annuel</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="liste">
+                        <div class="form-group">
+                            <label for="name">Société bénificiaire:</label>
+                            <ul>
+                                <li *ngFor="let  soci of soci_nom" [for]="soci.id">
+                                    <input type="radio" name="societe" [id]="soci.id" [value]="soci.id" [checked]="soci.checked" (change)="selectSociete(soci)" />&nbsp;{{soci.attributes.Nom}}
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div>
+                    <button type="button" class="btn btn-success" style="margin-left: 355px;" (click)="addTache()">Enregistrer</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+    </form>

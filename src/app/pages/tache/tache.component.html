@@ -1,0 +1,43 @@
+<div class="title">
+    <h3>liste des Taches</h3>
+    <button style="float: right;" type="button" class="btn btn-success" mat-raised-button (click)="openAddPopup()"><i class="bi bi-plus-circle"></i> Ajouter</button>
+  </div>
+<table class="table full-width">
+    <tr class="titre">
+      <th>Taches</th>
+      <th>Description</th>
+      <th>Type de tache</th>
+      <th>Nbre de Tache</th>
+      <th>coût unitaire</th>
+      <th>Société bénificiaire</th>
+    </tr>
+    <tr *ngFor="let tache of tache_nom | paginate: { itemsPerPage: 10, currentPage: p }">
+      <td>
+        <span>{{tache.attributes.nom_tache}}</span>
+      </td>
+      <td>
+        <span>{{tache.attributes.Description}}</span>
+      </td>
+      <td>
+        <span>{{tache.attributes.type_tache}}</span>
+      </td>
+      <td>
+        <span>{{tache.attributes.nombre_de_tache}}</span>
+      </td>
+      <td>
+        <span>{{tache.attributes.cout_par_piece}}</span>
+      </td>
+      <td>
+        <span *ngIf="tache.societesList && tache.societesList.attributes.Nom">{{tache.societesList.attributes.Nom}}</span>
+      </td>
+      <td>
+        <div class="text-center">
+          <button type="button" class="icon-button" (click)="edit(tache)"><i class="bi bi-pencil"></i></button>
+          <button type="button" class="icon-button ml-auto" (click)="deleteTache(tache.id)"><i class="bi bi-trash"></i></button>
+        </div>
+      </td>
+    </tr>
+</table>
+<div class="text-center">
+  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+</div>

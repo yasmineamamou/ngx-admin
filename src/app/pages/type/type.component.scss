@@ -1,0 +1,36 @@
+// Import Font Awesome CSS
+@import "~@fortawesome/fontawesome-free/css/all.css";
+@import '~bootstrap-icons/font/bootstrap-icons.css';
+.icon-button {
+  background-color: transparent;
+  border: none;
+  i {
+    color: #333;
+    font-size:22px;
+  }
+}
+button,.pagination{
+  float: right;
+}
+.title h3{
+  background-color: rgba(0, 0, 0, 0.836); 
+  color:white;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+}
+span{
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+th{
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #333;
+  height: 60px;
+}
+th, td {
+  border-bottom: 1px solid #ddd;
+}
+ul{
+  list-style-type: none;
+}

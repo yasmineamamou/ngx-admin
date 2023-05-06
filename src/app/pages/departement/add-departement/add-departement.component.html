@@ -1,0 +1,35 @@
+<div>
+  <h1>Crée un nouveau Département</h1>
+  <hr>
+</div>
+<form>
+  <table>
+    <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Nom</label>
+          <input required type="text" class="form-control" id="newDepName" [(ngModel)]="newDepName" name="newDepName" placeholder="Nom de département">
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Liste des societés:</label>
+          <ul>
+            <li *ngFor="let  soci of societe_nom" [for]="soci.id">
+              <input required type="radio" name="societe" [id]="soci.id" [value]="soci.id" [checked]="soci.checked" (change)="selectSociety(soci)" />{{soci.attributes.Nom}}
+            </li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>
+          <button type="button" class="btn btn-success" (click)="addDepartement()" [disabled]="!newDepName || !selectedSocieteId">Ajouter</button>
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>

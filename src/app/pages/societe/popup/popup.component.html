@@ -1,0 +1,43 @@
+<div>
+  <h1>Modification de société</h1>
+  <hr>
+</div>
+<form>
+  <table>
+    <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Nom de société</label>
+          <input id="name" type="text" class="form-control" [(ngModel)]="societe_nom" name="newDepName">
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Description</label>
+          <textarea id="name" class="Description" type="text" [(ngModel)]="societe_description" name="newDepDescription"></textarea>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Types de société</label>
+          <ul>
+            <li *ngFor="let type of typesList">
+              <input type="radio" name="type" [id]="type.id" [value]="type.id" [checked]="type.checked" (change)="selectType(type)" />&nbsp; {{type.attributes.type}}
+            </li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>
+          <button type="button" class="btn btn-success" (click)="editSociete()">Enregistrer</button>
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>
