@@ -21,8 +21,8 @@ import {
   NbWindowModule,
 } from '@nebular/theme';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { NbAuthService } from '@nebular/auth';
-
+import { AuthInterceptorComponent } from './auth-interceptor/auth-interceptor.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http'; 
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -44,6 +44,13 @@ import { NbAuthService } from '@nebular/auth';
     NgxPaginationModule,
   ],
   bootstrap: [AppComponent],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorComponent,
+      multi: true
+    }
+  ]
 })
 export class AppModule {
 }

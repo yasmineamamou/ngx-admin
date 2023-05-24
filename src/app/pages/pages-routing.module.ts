@@ -2,21 +2,16 @@ import { DepartementComponent } from './departement/departement.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { PagesComponent } from './pages.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
 import { SocieteComponent } from "./societe/societe.component";
-import { TypeComponent } from "./type/type.component";
-import { CompteComponent } from './compte/compte.component';
+import { TypeComponent } from "./type/type.component"; 
 import { TacheComponent } from "./tache/tache.component";
 import { ProjetComponent } from "./projet/projet.component";
+import { UserComponent } from "./user/user.component";
+import { FactureComponent } from './facture/facture.component';
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
   children: [
-    {
-      path: 'iot-dashboard',
-      component: DashboardComponent,
-    },
     {
       path: 'Departement',
       component: DepartementComponent,
@@ -30,8 +25,8 @@ const routes: Routes = [{
       component: TypeComponent,
     },
     {
-      path: 'Compte',
-      component: CompteComponent,
+      path: 'Employer',
+      component: UserComponent,
     },
     {
       path: 'Tache',
@@ -42,18 +37,17 @@ const routes: Routes = [{
       component: ProjetComponent,
     },
     {
-      path: 'miscellaneous',
-      loadChildren: () => import('./miscellaneous/miscellaneous.module')
-        .then(m => m.MiscellaneousModule),
+      path: 'Facture',
+      component: FactureComponent,
     },
     {
       path: '',
-      redirectTo: 'Departement',
+      redirectTo: 'Type',
       pathMatch: 'full',
     },
     {
       path: '**',
-      component: NotFoundComponent,
+      component: TypeComponent,
     },
   ],
 }];

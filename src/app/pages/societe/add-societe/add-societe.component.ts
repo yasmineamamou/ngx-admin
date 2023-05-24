@@ -1,45 +1,52 @@
-import { Component, EventEmitter, Output  } from '@angular/core';
+import { Component, EventEmitter, Inject, Output  } from '@angular/core';
 import { SocieteService } from "../../../services/societe.service";
+import { NbToastrService } from '@nebular/theme';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { SocieteComponent } from '../societe.component';
+import { AuthService } from "./../../../services/auth.service";
 @Component({
   selector: 'ngx-add-societe',
   templateUrl: './add-societe.component.html',
   styleUrls: ['./add-societe.component.scss']
 })
 export class AddSocieteComponent {
-  newSocieteName: string;
-  newSocieteDescription: any; 
+  newSocieteName: string='';
+  newSocieteDescription: String=''; 
   type_nom: any;
   selectedTypeId: any;
+  errorMessage: string;
 
-  constructor(private societeService: SocieteService) { }
-  @Output() onClose = new EventEmitter<void>();
+  constructor(private authService: AuthService, private societeService: SocieteService,private toastrService: NbToastrService, public dialog: MatDialogRef<SocieteComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
-  closeAddPopup() {
-    this.onClose.emit();
-  }
   ngOnInit() {
     this.getTypes();
   }
   async addSociete() {
-    console.log(this.newSocieteName);
+    const userStr = sessionStorage.getItem('user');
+    const currentUser = userStr ? JSON.parse(userStr) : null;
+    const createdBy = currentUser ? currentUser.id : null;
     let sociType: any[]=[];
     this.type_nom.forEach(element => {
       if(element.checked == true){
         sociType.push(element);
       }
     });
-    console.log("list soc typ"+sociType);
-
-    let societeData = { Nom: this.newSocieteName, Description:this.newSocieteDescription, types: sociType};
+    if ( sociType.length ==0||this.newSocieteName.trim() ==='' || this.newSocieteDescription.trim() ==='' ){
+      this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
+    }
+    else{
+    let societeData = { Nom: this.newSocieteName, Description:this.newSocieteDescription, types: sociType,createdBy: createdBy};
     await this.societeService.addSociete(societeData).then(res => {
         console.log("new soc "+res.data);
         this.getTypes();
         this.newSocieteName = '';
         this.newSocieteDescription = '';
+        this.dialog.close({ success: true, societe: res.data });
+        this.toastrService.success("Société crée", "Création");
     }).catch(err => {
-        console.log(err);
-    });
-    location.reload();
+      this.toastrService.danger("Erreur!! can't create societe", "Erreur");
+      this.errorMessage = "Vous n'avez pas le droit pour cette action.";
+    });}
   }
   async getTypes() {
     await this.societeService.getTypes().then(res => {
@@ -52,14 +59,7 @@ export class AddSocieteComponent {
         console.log(err);
     });
   }
-  async selectType(type) {
-    this.type_nom.forEach((typ) => {
-      if (typ.id === type.id) {
-        typ.checked = true;
-        this.selectedTypeId = typ.id;
-      } else {
-        typ.checked = false;
-      }
-    });
+  selectType(type){
+    type.checked = !type.checked;
   }
 }

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-
+import { AuthService } from "./auth.service";
 @Injectable({
   providedIn: 'root'
 })
 export class SocieteService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authservice:AuthService) { }
 
   async getSocieteById(id) {
     let promise = new Promise<any>((resolve, reject) => {
@@ -69,4 +69,5 @@ export class SocieteService {
     });
     return promise;
   }
+
 }

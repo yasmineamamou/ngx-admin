@@ -2,6 +2,7 @@
   <h1>Crée une nouvelle societe</h1>
   <hr>
 </div>
+<div *ngIf="!errorMessage">
 <form>
   <table>
     <tr>
@@ -21,7 +22,7 @@
       </td>
     </tr>
     <tr>
-      <td>
+      <td class="groupe">
         <div class="form-group">
           <label for="name">Types de société</label>
           <ul>
@@ -35,9 +36,13 @@
     <tr>
       <td>
         <div>
-          <button type="button" class="btn btn-success" (click)="addSociete()" [disabled]="!newSocieteName || !newSocieteDescription|| !selectedTypeId" >Enregistrer</button>
+          <button type="button" class="btn btn-success" (click)="addSociete()">Enregistrer</button>
         </div>
       </td>
     </tr>
   </table>
 </form>
+</div>
+<div *ngIf="errorMessage">
+    <h1 style="text-align: center;">{{ errorMessage }}</h1>
+  </div>

@@ -6,10 +6,11 @@
     <tr class="titre">
       <th>Taches</th>
       <th>Description</th>
-      <th>Type de tache</th>
+      <th>Type</th>
       <th>Nbre de Tache</th>
-      <th>coût unitaire</th>
+      <th>C.U</th>
       <th>Société bénificiaire</th>
+      <th>Département exécutant</th>
     </tr>
     <tr *ngFor="let tache of tache_nom | paginate: { itemsPerPage: 10, currentPage: p }">
       <td>
@@ -29,6 +30,9 @@
       </td>
       <td>
         <span *ngIf="tache.societesList && tache.societesList.attributes.Nom">{{tache.societesList.attributes.Nom}}</span>
+      </td>
+      <td>
+        <span *ngIf="tache.departementsList && tache.departementsList.attributes.nom">{{tache.departementsList.attributes.nom}}</span>
       </td>
       <td>
         <div class="text-center">

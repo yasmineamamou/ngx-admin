@@ -10,6 +10,7 @@
       <th>Date fin</th>
       <th>coût</th> 
       <th>Société bénificiaire</th>
+      <th>Département exécutant </th>
     </tr>
     <tr *ngFor="let projet of projet_nom | paginate: { itemsPerPage: 10, currentPage: p }">
       <td>
@@ -29,6 +30,9 @@
       </td>
       <td>
         <span *ngIf="projet.societesList && projet.societesList.attributes.Nom">{{projet.societesList.attributes.Nom}}</span>
+      </td>
+      <td>
+        <span *ngIf="projet.departementsList && projet.departementsList.attributes.nom">{{projet.departementsList.attributes.nom}}</span>
       </td>
       <td>
         <div class="text-center">

@@ -9,8 +9,8 @@ import {
   NbResetPasswordComponent,
 } from '@nebular/auth';
 import { AuthGuardService } from './services/auth-guard.service';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { NgxLoginComponent } from './login/login.component';
+import { TypeComponent } from './pages/type/type.component';
 
 export const routes: Routes = [
   {
@@ -55,7 +55,7 @@ export const routes: Routes = [
   },
   { path: '', redirectTo: 'pages', pathMatch: 'full' },
   { path: '**', redirectTo: 'pages' },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardService] },
+  { path: 'Type', component: TypeComponent, canActivate: [AuthGuardService] },
   { path: 'login', component: NgxLoginComponent }
 ];
 

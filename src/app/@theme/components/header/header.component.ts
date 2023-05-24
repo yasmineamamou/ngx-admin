@@ -1,16 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
-
+import { Router } from '@angular/router';
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
-import { map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { NbAuthJWTToken, NbAuthService } from '@nebular/auth';
+import { AuthService } from "./../../../services/auth.service";
 @Component({
   selector: 'ngx-header',
   styleUrls: ['./header.component.scss'],
   templateUrl: './header.component.html',
 })
+
 export class HeaderComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -37,16 +39,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ];
 
   currentTheme = 'default';
-
-  userMenu = [ { title: 'Profile' }, { title: 'Log out' } ];
-
+  admin: any = JSON.parse(sessionStorage.getItem('user'));
+  userMenu = [{ title: 'Log out', icon: 'log-out-outline'}];
+ 
   constructor(private sidebarService: NbSidebarService,
+              private router: Router,
               private menuService: NbMenuService,
               private themeService: NbThemeService,
               private userService: UserData,
               private layoutService: LayoutService,
               private breakpointService: NbMediaBreakpointsService,
-              private authService: NbAuthService) {
+              private authService: NbAuthService,
+              private AuthService : AuthService) {
+                console.log("name "+this.admin)
        this.authService.onTokenChange()
       .subscribe((token: NbAuthJWTToken) => {
         if (token.isValid()) {
@@ -61,7 +66,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.userService.getUsers()
       .pipe(takeUntil(this.destroy$))
       .subscribe((users: any) => this.user = users.nick);
-
+      this.menuService.onItemClick().subscribe(( event ) => {
+        this.onItemSelection(event.item.title);
+      })
     const { xl } = this.breakpointService.getBreakpointsMap();
     this.themeService.onMediaQueryChange()
       .pipe(
@@ -77,7 +84,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
       )
       .subscribe(themeName => this.currentTheme = themeName);
   }
-
+  onItemSelection( title ) {
+    if ( title === 'Log out' ) {
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
+      location.reload();
+    } 
+  }
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
@@ -96,6 +109,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   navigateHome() {
     this.menuService.navigateHome();
-    return false;
+    this.router.navigate(['/pages']);
   }
 }

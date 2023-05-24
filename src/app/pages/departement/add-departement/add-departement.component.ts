@@ -1,43 +1,48 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { DepartementService } from './../../../services/departement.service';
+import { NbToastrService } from '@nebular/theme';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { DepartementComponent } from '../departement.component';
 @Component({
   selector: 'ngx-add-departement',
   templateUrl: './add-departement.component.html',
   styleUrls: ['./add-departement.component.scss']
 })
 export class AddDepartementComponent {
-  newDepName: string;
+  newDepName: string='';
   societe_nom: any;
-  selectedSocieteId: any;
+  errorMessage: string;
 
-  constructor(private departementService: DepartementService) { }
+  constructor(private departementService: DepartementService, private toastrService: NbToastrService, public dialog: MatDialogRef<DepartementComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
-  @Output() onClose = new EventEmitter<void>();
-  closeAddPopup() {
-    this.onClose.emit();
-  }
   ngOnInit() {
     this.getSocietes();
   }
   async addDepartement() {
-    console.log(this.newDepName);
     let depSocietes: any[] = [];
     this.societe_nom.forEach(element => {
       if (element.checked == true) {
         depSocietes.push(element);
       }
     });
-    console.log("list dep soc " + depSocietes);
 
+    if (this.newDepName.trim() ==='' || depSocietes.length ==0){
+      this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
+    }
+    else{
     let departementData = { nom: this.newDepName, societe: depSocietes};
     await this.departementService.addDepartement(departementData).then(res => {
       console.log("new dep " + res.data);
       this.getSocietes();
       this.newDepName = '';
+      this.dialog.close({ success: true, departement: res.data });
+      this.toastrService.success("Departement crée", "Création"); 
+     
     }).catch(err => {
-      console.log(err);
+      this.toastrService.danger("Erreur!! can't create Departement", "Erreur");
+      this.errorMessage = "Vous n'avez pas le droit pour cette action.";
     });
-    location.reload();
+  }
   }
   async getSocietes() {
     await this.departementService.getSocietes().then(res => {
@@ -50,14 +55,8 @@ export class AddDepartementComponent {
       console.log(err);
     });
   }
-  async selectSociety(societe) {
-    this.societe_nom.forEach((soci) => {
-      if (soci.id === societe.id) {
-        soci.checked = true;
-        this.selectedSocieteId = soci.id;
-      } else {
-        soci.checked = false;
-      }
-    });
+  async selectSociety(societe){
+    societe.checked = !societe.checked;
   }
+
 }

@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { SocieteComponent } from "../societe.component";
 import { SocieteService } from "../../../services/societe.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
- 
+import { NbToastrService } from '@nebular/theme';
 @Component({
   selector: 'ngx-popup',
   templateUrl: './popup.component.html',
@@ -16,7 +16,7 @@ export class PopupComponent {
   typesList: any[]=[];
   societe_description: any;
   
-  constructor(private societeService: SocieteService, public dialog: MatDialogRef<SocieteComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(private societeService: SocieteService,private toastrService: NbToastrService, public dialog: MatDialogRef<SocieteComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   async ngOnInit() {
     await this.societeService.getSocieteById(this.data).then(async data => {
@@ -40,6 +40,10 @@ export class PopupComponent {
     })
   }
   async editSociete() {
+    if (this.societe_nom.trim() ==='' || this.societe_description.trim() ==='' || this.selectType === null){
+      this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
+    }
+    else{
     console.log(this.editedSocieteName, this.editedSocieteDescription);
     let sociTypes: any[] = [];
     this.typesList.forEach(element => {
@@ -53,18 +57,12 @@ export class PopupComponent {
     await this.societeService.editSociete(this.societe.id, sociData).then(res => {
       console.log("new soci " + res.data);
       this.dialog.close({ success: true, societe: res.data });
+      this.toastrService.success("Société modifier", "Modification");
     }).catch(err => {
-      console.log(err);
-    });
-    location.reload();
+      this.toastrService.danger("Erreur!! can't create societe", "Erreur");
+    });}
   }
   async selectType(type){
-    this.typesList.forEach(element => {
-      if(element.id == type.id){
-        element.checked = true;
-      }else{
-        element.checked =false;
-      }
-    });
+    type.checked = !type.checked;
   }
 }

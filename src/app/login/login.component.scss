@@ -1,0 +1,23 @@
+// Define variables for icon color and size
+$icon-color: #333;
+$icon-size: 120px;
+
+// Import Font Awesome CSS
+@import "~@fortawesome/fontawesome-free/css/all.css";
+@import '~bootstrap-icons/font/bootstrap-icons.css';
+
+// Style the button to remove default styles
+
+
+  // Style the icon inside the button
+  h1 i {
+    color: $icon-color;
+    font-size: $icon-size;
+  }
+
+button{
+    background-color: rgb(247, 245, 245);
+    color: black;
+    border-color:  rgb(247, 245, 245);
+    border-style: outset;
+}

@@ -2,6 +2,7 @@
   <h1>Crée un nouveau Département</h1>
   <hr>
 </div>
+<div *ngIf="!errorMessage">
 <form>
   <table>
     <tr>
@@ -27,9 +28,13 @@
     <tr>
       <td>
         <div>
-          <button type="button" class="btn btn-success" (click)="addDepartement()" [disabled]="!newDepName || !selectedSocieteId">Ajouter</button>
+          <button type="button" class="btn btn-success" (click)="addDepartement()">Ajouter</button>
         </div>
       </td>
     </tr>
   </table>
 </form>
+</div>
+<div *ngIf="errorMessage">
+    <h1 style="text-align: center;">{{ errorMessage }}</h1>
+  </div>

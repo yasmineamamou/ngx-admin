@@ -126,6 +126,6 @@
     "tslint-language-service": "^0.9.9",
     "typescript": "~4.6.4",
     "webpack": "^5.76.2",
-    "webpack-sources": "^3.2.3"
+    "webpack-sources": "^3.2.3" 
   }
 }

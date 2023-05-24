@@ -1,15 +1,6 @@
-import { NbMenuItem } from '@nebular/theme';
-
+import { NbMenuItem  } from '@nebular/theme';
+import { icon } from 'leaflet';
 export const MENU_ITEMS: NbMenuItem[] = [
-  {
-    title: 'IoT Dashboard',
-    icon: 'home-outline',
-    link: '/pages/iot-dashboard',
-  },
-  {
-    title: 'FEATURES',
-    group: true,
-  },
   {
     title: 'Type de société',
     icon: 'cube-outline',
@@ -26,9 +17,9 @@ export const MENU_ITEMS: NbMenuItem[] = [
     link: '/pages/Departement',
   },
   {
-    title: 'Compte',
+    title: 'Employer',
     icon: 'people-outline',
-    link: '/pages/Compte',
+    link: '/pages/Employer',
   },
   {
     title: 'Taches',
@@ -41,35 +32,9 @@ export const MENU_ITEMS: NbMenuItem[] = [
     link: '/pages/Projet',
   },
   {
-    title: 'Miscellaneous',
-    icon: 'shuffle-2-outline',
-    children: [
-      {
-        title: '404',
-        link: '/pages/miscellaneous/404',
-      },
-    ],
+    title: 'Facture',
+    icon: 'credit-card-outline',
+    link: '/pages/Facture',
   },
-  {
-    title: 'Auth',
-    icon: 'lock-outline',
-    children: [
-      {
-        title: 'Login',
-        link: '/auth/login',
-      },
-      {
-        title: 'Register',
-        link: '/auth/register',
-      },
-      {
-        title: 'Request Password',
-        link: '/auth/request-password',
-      },
-      {
-        title: 'Reset Password',
-        link: '/auth/reset-password',
-      },
-    ],
-  },
+
 ];

@@ -1,0 +1,55 @@
+<div>
+    <h1>Crée un nouveau User</h1>
+    <hr>
+  </div>
+  <form [formGroup]="userForm">
+    <table>
+      <tr>
+        <td>
+          <div class="form-group">
+            <label for="name">Nom d'utilisateur</label>
+            <input  id="name" type="text" class="form-control" formControlName="username" name="newUserNom" placeholder="Nom d'utilisateur">
+          </div>
+        </td>
+        <td>
+          <div class="form-group">
+            <label for="name">N° de téléphone</label>
+            <input  id="name" type="tel" class="form-control" formControlName="telephone" name="newUserTel" placeholder="N°  de téléphone">
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="form-group">
+            <label for="name">Email</label>
+            <input  id="name" type="email" class="form-control" formControlName="email" name="newUserEmail" placeholder="Email">
+          </div>
+        </td>
+        <td>
+          <div class="form-group">
+            <label for="name">Mot de passe</label>
+            <input  id="name" type="password" class="form-control" formControlName="password" name="newUserPassword" placeholder="Mot de passe">
+          </div>
+        </td>
+      </tr>
+      <tr>
+      <td>
+        <div class="form-group">
+          <label for="name">Liste des Départements</label>
+          <ul>
+            <li *ngFor="let dep of dep_nom" [for]="dep.id">
+              <input  type="radio" [id]="dep.id" [value]="dep.id" name="departement" [checked]="dep.checked" (change)="selectDepartement(dep)" />&nbsp; {{dep.attributes.nom}}
+            </li>
+          </ul>
+        </div>
+      </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div>
+            <button type="button" class="btn btn-success" (click)="addUser()">Enregistrer</button>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </form>

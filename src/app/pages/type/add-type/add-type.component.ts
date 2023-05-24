@@ -1,5 +1,8 @@
-import { Component, EventEmitter, Output   } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { TypeService } from "./../../../services/type.service";
+import { NbToastrService } from '@nebular/theme';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TypeComponent } from '../type.component';
 @Component({
   selector: 'ngx-add-type',
   templateUrl: './add-type.component.html',
@@ -7,35 +10,28 @@ import { TypeService } from "./../../../services/type.service";
 })
 export class AddTypeComponent {
   type_nom: any;
-  newTypeName: string;
+  newTypeName: string='';  
+  errorMessage: string;
 
-  constructor(private typeService: TypeService){}
-  @Output() onClose = new EventEmitter<void>();
-
-  closeAddPopup() {
-    this.onClose.emit();
-  }
+  constructor(private typeService: TypeService, private toastrService: NbToastrService, public dialog: MatDialogRef<TypeComponent>, @Inject(MAT_DIALOG_DATA) public data: any){}
+ 
   ngOnInit() {
-    this.getTypes();
-  }
-  async getTypes() {
-    await this.typeService.getTypes().then(res => {
-        this.type_nom = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-    });
   }
   async addType() {
+    if (this.newTypeName.trim() ==''){
+      this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
+    }
+    else{
     console.log(this.newTypeName);
     let typeData = { type: this.newTypeName};
     await this.typeService.addType(typeData).then(res => {
       console.log("new typ "+res.data);
-        this.getTypes();
-        this.newTypeName = '';
+        this.newTypeName = ""
+        this.dialog.close({ success: true, type: res.data });
+        this.toastrService.success("Type crée", "Création");
     }).catch(err => {
-        console.log(err);
-    });
-    location.reload();
+         this.toastrService.danger("Erreur!! can't create type", "Erreur");
+         this.errorMessage = "Vous n'avez pas le droit pour cette action.";
+    });}
   }
 }

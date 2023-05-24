@@ -5,13 +5,13 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class CompteService {
+export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  async getCompteById(id) {
+  async getUserById(id) {
     let promise = new Promise<any>((resolve, reject) => {
-      this.http.get(environment.url_backend+'/api/comptes/'+id+'?populate=*').toPromise().then(res => {
+      this.http.get(environment.url_backend+'/api/users/'+id+'?populate=*').toPromise().then(res => {
         resolve(res);
       }).catch(err=>{
         reject(err);
@@ -19,10 +19,9 @@ export class CompteService {
     });
     return promise;
   }
-  
   async deleteElementById(id) {
     let promise = new Promise<any>((resolve, reject) => {
-      this.http.get(environment.url_backend+'/api/comptes/'+id+'?populate=*').toPromise().then(res => {
+      this.http.get(environment.url_backend+'/api/users/'+id+'?populate=*').toPromise().then(res => {
         resolve(res);
       }).catch(err=>{
         reject(err);
@@ -30,9 +29,9 @@ export class CompteService {
     });
     return promise;
   }
-  async getComptes() {
+  async getUsers() {
     let promise = new Promise<any>((resolve, reject) => {
-      this.http.get(environment.url_backend+'/api/comptes?populate=*').toPromise().then(res => {
+      this.http.get(environment.url_backend+'/api/users?populate=*').toPromise().then(res => {
         resolve(res);
       }).catch(err=>{
         reject(err);
@@ -40,9 +39,10 @@ export class CompteService {
     });
     return promise;
   }
-  async addCompte(compteData) {
+  async addUser(userData) {
+    console.log(JSON.stringify(userData))
     let promise = new Promise<any>((resolve, reject) => {
-        this.http.post(environment.url_backend+'/api/comptes', { data: compteData }).toPromise().then(res => {
+        this.http.post(environment.url_backend+'/api/users', userData ).toPromise().then(res => {
             resolve(res);
         }).catch(err => {
             reject(err);
@@ -50,9 +50,9 @@ export class CompteService {
     }); 
     return promise;
 }
-  async editCompte(compteId, compteData) {
+  async editUser(userId, userData) {
     let promise = new Promise<any>((resolve, reject) => {
-        this.http.put(environment.url_backend + `/api/comptes/${compteId}`, { data: compteData }).toPromise().then(res => {
+        this.http.put(environment.url_backend + `/api/users/${userId}`, userData ).toPromise().then(res => {
             resolve(res);
         }).catch(err => {
             reject(err);
@@ -60,19 +60,9 @@ export class CompteService {
     });
     return promise;
   }
-  async deleteCompte(compteId) {
+  async deleteUser(userId) {
     let promise = new Promise<any>((resolve, reject) => {
-        this.http.delete(environment.url_backend+`/api/comptes/${compteId}`).toPromise().then(res => {
-            resolve(res);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-    return promise;
-  }
-  async getSocietes() {
-    let promise = new Promise<any>((resolve, reject) => {
-        this.http.get(environment.url_backend+'/api/societes').toPromise().then(res => {
+        this.http.delete(environment.url_backend+`/api/users/${userId}`).toPromise().then(res => {
             resolve(res);
         }).catch(err => {
             reject(err);
@@ -89,5 +79,25 @@ export class CompteService {
         });
     });
     return promise;
+  }
+  async getUsersMe() {
+    let promise = new Promise<any>((resolve, reject) => {
+      this.http.get(environment.url_backend+'/api/users/me').toPromise().then(res => {
+        resolve(res);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+    return promise;
+  }
+  async fetchData() {
+    try {
+      const userData = await this.getUsersMe();
+      console.log(userData);
+      // Handle the user data
+    } catch (error) {
+      console.error(error);
+      // Handle any errors
+    }
   }
 }

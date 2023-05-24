@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { DepartementService } from './../../../services/departement.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DepartementComponent } from "./../departement.component";
+import { NbToastrService } from '@nebular/theme';
 @Component({
   selector: 'ngx-edit-departement',
   templateUrl: './edit-departement.component.html',
@@ -13,7 +14,7 @@ export class EditDepartementComponent {
   departement: any;
   societiesList: any[] = [];
 
-  constructor(private departementService: DepartementService, public dialog: MatDialogRef<DepartementComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(private departementService: DepartementService, private toastrService: NbToastrService, public dialog: MatDialogRef<DepartementComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   async ngOnInit() {
     await this.departementService.getDepartementById(this.data).then(async data => {
@@ -36,6 +37,10 @@ export class EditDepartementComponent {
     })
   }
   async editDepartement() {
+    if (this.dep_nom.trim() ===''){
+      this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
+    }
+    else{
     console.log(this.editedDepName);
     let depSocietes: any[] = [];
     this.societiesList.forEach(element => {
@@ -50,18 +55,18 @@ export class EditDepartementComponent {
     await this.departementService.editDepartement(this.departement.id, depData).then(res => {
       console.log("new dep " + res.data);
       this.dialog.close({ success: true, departement: res.data });
+      this.toastrService.success("Departement modifier", "Modification");
     }).catch(err => {
-      console.log(err);
+      this.toastrService.danger("Erreur!! can't Modify Departement", "Erreur");
     });
-    location.reload();
-  }
-  async selectSociete(societe){
+  }}
+  async selectSociety(societe){
     this.societiesList.forEach(element => {
-      if(element.id == societe.id){
+      if (element.id == societe.id) {
         element.checked = true;
       }else{
-        element.checked =false;
+        element.checked = false;
       }
     });
-  }
+  } 
 }

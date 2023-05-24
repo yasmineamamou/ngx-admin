@@ -1,0 +1,45 @@
+<div *ngIf="!errorMessage">
+<div class="title">
+    <h3>liste des users</h3>
+    <button style="float: right;" type="button" class="btn btn-success" mat-raised-button (click)="openAddPopup()"><i class="bi bi-plus-circle"></i> Ajouter</button>
+  </div>
+  <table class="table full-width">
+    <tr class="titre">
+      <th>Nom d'utilisateur</th>
+      <th>Email</th>
+      <th>N° de téléphone</th>
+      <th>Role</th>
+      <th>Département</th>
+    </tr>
+    <tr *ngFor="let user of user_nom  | paginate: { itemsPerPage: 10, currentPage: p }">
+      <td>
+        <span>{{user.username}}</span>
+      </td>
+      <td>
+        <span>{{user.email}}</span>
+      </td>
+      <td>
+        <span>{{user.telephone}}</span>
+      </td>
+      <td>
+        <span>{{user.role.name}}</span>
+      </td>
+      <td>
+        <span *ngIf="user.departement && user.departement.nom">{{user.departement.nom}}</span>
+      </td>
+      <td>
+        <div class="text-center">
+          <button type="button" class="icon-button" (click)="edit(user)"><i class="bi bi-pencil"></i></button>
+          <button type="button" class="icon-button ml-auto" (click)="deleteUser(user.id)"><i class="bi bi-trash"></i></button>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <div class="text-center">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+</div>
+  <div *ngIf="errorMessage">
+    <h1 style="text-align: center;">{{ errorMessage }}</h1>
+  </div>
+  

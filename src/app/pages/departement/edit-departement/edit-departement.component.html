@@ -18,7 +18,7 @@
                 <label for="name">Liste des societés:</label>
                 <ul>
                   <li *ngFor="let societe of societiesList">
-                    <input type="radio" name="societe" [id]="societe.id" [value]="societe.id" [checked]="societe.checked" (change)="selectSociete(societe)" />&nbsp; {{societe.attributes.Nom}}
+                    <input type="radio" name="societe" [id]="societe.id" [value]="societe.id" [checked]="societe.checked" (change)="selectSociety(societe)" />&nbsp; {{societe.attributes.Nom}}
                   </li>
                 </ul>
               </div>

@@ -45,7 +45,8 @@
         </td>
     </tr>
     <tr>
-        <td class="societe">
+      <ul>
+        <li class="list">
           <div>
             <label for="name">Société bénificiaire:</label>
             <ul>
@@ -54,10 +55,24 @@
                 </li>
             </ul>
         </div>
-        <div>
-          <button style="margin-left: 22px;" type="button" class="btn btn-success" (click)="editProjet()">Enregistrer</button>
+         </li>
+         <li class="list">
+          <div>
+            <label for="name">Département exécutant:</label>
+            <ul>
+                <li *ngFor="let dep of departementsList" [for]="dep.id">
+                    <input type="radio" name="departement" [id]="dep.id" [value]="dep.id" [checked]="dep.checked" (click)="selectDepartement(dep)" />&nbsp;{{dep.attributes.nom}}
+                </li>
+            </ul>
         </div>
-      </td>
+        </li>
+      </ul>
+    </tr>
+        <tr>
+        <div>
+          <button type="button" class="btn btn-success" (click)="editProjet()">Enregistrer</button>
+        </div>
+
     </tr>
   </table>
 </form>

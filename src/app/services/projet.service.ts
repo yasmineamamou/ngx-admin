@@ -68,5 +68,24 @@ export class ProjetService {
     });
     return promise;
   }
-
+  async getDepartements() {
+    let promise = new Promise<any>((resolve, reject) => {
+        this.http.get(environment.url_backend+'/api/departements').toPromise().then(res => {
+            resolve(res);
+        }).catch(err => {
+            reject(err);
+        });
+    });
+    return promise;
+  }
+  async getUsers() {
+    let promise = new Promise<any>((resolve, reject) => {
+        this.http.get(environment.url_backend+'/api/users').toPromise().then(res => {
+            resolve(res);
+        }).catch(err => {
+            reject(err);
+        });
+    });
+    return promise;
+  }
 }

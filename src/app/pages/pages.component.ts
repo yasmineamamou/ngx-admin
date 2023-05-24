@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-
+import { NbMenuItem, NbMenuService } from '@nebular/theme';
 import { MENU_ITEMS } from './pages-menu';
-
+import { AuthService } from "./../services/auth.service";
+import { UserService } from '../services/user.service';
 @Component({
   selector: 'ngx-pages',
   styleUrls: ['pages.component.scss'],
@@ -13,6 +14,5 @@ import { MENU_ITEMS } from './pages-menu';
   `,
 })
 export class PagesComponent {
-
   menu = MENU_ITEMS;
 }

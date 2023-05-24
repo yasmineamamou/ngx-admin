@@ -13,7 +13,6 @@
         </td>
     </tr>
     <tr>
-      <tr>
         <td>
           <div class="form-group">
             <label for="name">Description</label>
@@ -21,25 +20,25 @@
           </div>
         </td>
       </tr>
-    <tr>
-      <td colspan="2">
         <tr>
-          <td class="liste">
-            <div class="form-group">
-              <label for="name">Nombre de Tache</label>
-              <input id="name" type="number" class="form-control" [(ngModel)]="tache_nbre" name="newTacheJour">
-            </div>
-          </td>
-          <td class="liste">
-            <div class="form-group">
-              <label for="name">coût unitaire</label>
-              <input id="name" type="number" class="form-control" [(ngModel)]="tache_cout" name="newTacheCout">
-            </div>
+          <td>
+            <ul>
+              <li class="listeNbr">
+                <div class="form-group">
+                  <label for="name">Nombre de Tache</label>
+                  <input id="name" type="number" class="form-control" [(ngModel)]="tache_nbre" name="newTacheJour">
+                </div>
+              </li>
+              <li class="listeNbr">
+                <div class="form-group">
+                  <label for="name">coût unitaire</label>
+                  <input id="name" type="number" class="form-control" [(ngModel)]="tache_cout" name="newTacheCout">
+                </div>
+              </li>
+            </ul>
           </td>
         </tr>
-      </td>
-    </tr>
-    <tr>
+      <tr>
         <td>
             <ul>
                 <li class="liste">
@@ -78,11 +77,21 @@
                         <label for="name">Société bénificiaire:</label>
                         <ul>
                             <li *ngFor="let societe of societesList" [for]="societe.id">
-                                <input type="radio" name="societe" [id]="societe.id" [value]="societe.id" [checked]="societe.checked" (click)="selectSociete(societe)" />&nbsp;{{societe.attributes.Nom}}
+                                <input type="radio" name="societe" [id]="societe.id" [value]="societe.id" [checked]="societe.checked" (click)="selectSociety(societe)" />&nbsp;{{societe.attributes.Nom}}
                             </li>
                         </ul>
                     </div>
                 </li>
+                <li class="liste">
+                  <div class="form-group">
+                      <label for="name">Département exécutant:</label>
+                      <ul>
+                          <li *ngFor="let dep of departementsList" [for]="dep.id">
+                              <input type="radio" name="departement" [id]="dep.id" [value]="dep.id" [checked]="dep.checked" (click)="selectDepartement(dep)" />&nbsp;{{dep.attributes.nom}}
+                          </li>
+                      </ul>
+                  </div>
+              </li>
             </ul>
         </td>
     </tr>

@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { TacheComponent } from "../tache.component";
 import { TacheService } from "../../../services/tache.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NbToastrService } from '@nebular/theme';
 @Component({
   selector: 'ngx-edit-tache',
   templateUrl: './edit-tache.component.html',
@@ -19,9 +20,10 @@ export class EditTacheComponent {
   editedTacheCout: any;
   editedTacheNbre: any;
   tache: any;
-  societesList: any;
+  societesList: any[] = [];
+  departementsList: any[] = [];
   
-  constructor(private tacheService: TacheService, public dialog: MatDialogRef<TacheComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(private tacheService: TacheService, private toastrService: NbToastrService, public dialog: MatDialogRef<TacheComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
   
   async ngOnInit() {
     await this.tacheService.getTachesById(this.data).then(async data => {
@@ -32,6 +34,19 @@ export class EditTacheComponent {
       this.tache_type = this.tache.attributes.type_tache;
       this.tache_cout = this.tache.attributes.cout_par_piece;
       this.tache_nbre = this.tache.attributes.nombre_de_tache;
+      await this.tacheService.getDepartements().then(res => {
+        this.departementsList = res.data;
+        console.log(this.departementsList);
+        let id_dep =this.tache.attributes.departement.data.id;
+        this.departementsList.forEach(element => {
+          if(element.id == id_dep){
+            element.checked =true;
+          }else{
+            element.checked =false;
+          }
+        })
+        console.log(this.departementsList);
+      })
       await this.tacheService.getSocietes().then(res => {
         this.societesList = res.data;
         console.log(this.societesList);
@@ -48,7 +63,19 @@ export class EditTacheComponent {
     })
   }
   async editTache() {
+    if (this.tache_nom.trim() ==='' || this.tache_description.trim() ==='' ||this.tache_nbre==0 || this.tache_cout==0){
+      this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
+    }
+    else{
     console.log(this.editedTacheName, this.editedTacheDescription, this.editedTacheCout, this.editedTacheNbre, this.editedTachetype);
+    let tacheDepartements: any;
+    this.departementsList.forEach(element => {
+      if (element.checked == true) {
+        tacheDepartements=element;
+        console.log(element)
+      }
+    });
+    console.log("list tache dep " + tacheDepartements);
     let tacheSocietes: any;
     this.societesList.forEach(element => {
       if (element.checked == true) {
@@ -57,22 +84,32 @@ export class EditTacheComponent {
       }
     });
     console.log("list tache soci " + tacheSocietes);
-    let TacheData = { nom_tache: this.tache_nom , Description: this.tache_description, cout_par_piece: this.tache_cout, type_tache: this.tache_type, nombre_de_tache: this.tache_nbre, societe: tacheSocietes};
+    let TacheData = { nom_tache: this.tache_nom , Description: this.tache_description, cout_par_piece: this.tache_cout, type_tache: this.tache_type, nombre_de_tache: this.tache_nbre, societe: tacheSocietes, departement: tacheDepartements};
     await this.tacheService.editTache(this.tache.id, TacheData).then(res => {
       console.log("new tache " + res.data);
       this.dialog.close({ success: true, tache: res.data });
-    }).catch(err => {
-      console.log(err);
-    });
-    location.reload();
+      this.toastrService.success("Tache modifier", "Modification");
+
+  }).catch(err => {
+       this.toastrService.danger("Erreur!! can't modify tache", "Erreur");
+  });}
   }
-  async selectSociete(societe){
+  async selectSociety(societe){
     this.societesList.forEach(element => {
-      if(element.id == societe.id){
+      if (element.id == societe.id) {
         element.checked = true;
       }else{
-        element.checked =false;
+        element.checked = false;
       }
     });
-  }
+  } 
+  async selectDepartement(departement){
+    this.departementsList.forEach(element => {
+      if (element.id == departement.id) {
+        element.checked = true;
+      }else{
+        element.checked = false;
+      }
+    });
+  } 
 }

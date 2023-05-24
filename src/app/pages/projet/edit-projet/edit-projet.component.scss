@@ -19,11 +19,17 @@ ul{
   .form-control{
   margin-right: 35px;
   }
-.liste{
+  .liste{
     float: left;
-    margin-right: 40px;
-    padding-left: 25px;
-}
-.societe{
-  padding-left: 350px;
- }
+    width: 265px;
+    margin-right: 10px;
+  }
+  .list{
+    float: left;
+    width: 350px;
+    margin-right: 50px;
+    margin-left: 48px;
+  }
+  button{
+    margin-left: 360px;
+  }

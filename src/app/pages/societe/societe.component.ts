@@ -3,6 +3,7 @@ import { SocieteService } from "./../../services/societe.service";
 import { PopupComponent } from './popup/popup.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AddSocieteComponent } from "./add-societe/add-societe.component";
+import { NbToastrService } from '@nebular/theme';
 @Component({
   selector: 'ngx-societe',
   templateUrl: './societe.component.html',
@@ -14,16 +15,18 @@ export class SocieteComponent {
   dep_nom: any;
   type_nom: any;
 
-  constructor(private societeService: SocieteService, public dialog: MatDialog){}
+  constructor(private societeService: SocieteService, private toastrService: NbToastrService, public dialog: MatDialog){}
 
   openAddPopup() {
     const dialogRef = this.dialog.open(AddSocieteComponent, {
       width: '60%',
       height: '80%',
     });
+    dialogRef.afterClosed().subscribe(async result => {
+      this.getSocietes();
+    })
   }
   ngOnInit() {
-    this.getTypes();
     this.getSocietes();
   }
   async getSocietes() {
@@ -35,7 +38,7 @@ export class SocieteComponent {
         }); 
       })
       .catch(err => {
-        console.log(err);
+        this.toastrService.danger("Erreur!! can't get societie ", "Erreur");
     });
   }
   edit(societe) {
@@ -47,29 +50,18 @@ export class SocieteComponent {
     dialogConfig.data = societe.id;
     const dialogRef = this.dialog.open(PopupComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(async result => {
-      console.log(result)
-      societe = result.societe;
+      this.getSocietes();
     })
   }
   async deleteSociete(id_soc) {
     if(confirm("Are you sure to delete "+name)) {
       await this.societeService.deleteSociete(id_soc).then(res => {
         console.log("deleted soc " +id_soc);
+        this.toastrService.success("Société supprimée", "Supression");
       }).catch(err => {
-        console.log(err);
+        this.toastrService.danger("Erreur!! can't delete societie", "Erreur");
       });
     }
-    location.reload();
-  }
-  async getTypes() {
-    await this.societeService.getTypes().then(res => {
-      this.type_nom = res.data;
-      this.type_nom.forEach(typ => {
-        typ.typesList = typ.attributes.types.data;
-        console.log(JSON.stringify(typ.typesList));
-        }); 
-    }).catch(err => {
-        console.log(err);
-    });
+    this.getSocietes();
   }
 }
