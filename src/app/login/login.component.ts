@@ -30,7 +30,8 @@ export class NgxLoginComponent implements OnInit {
           this.tokenStorage.saveUser(data.data.user);*/
           this.toastrService.success("You're logged in", "Log-in");
           this.router.navigate(['/pages' ])
-          
+         // const user = JSON.parse(sessionStorage.getItem('user'));
+
         },
         err => { 
           this.toastrService.danger("Erreur!! can't login", "Erreur");

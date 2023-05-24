@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { TacheService } from './../../services/tache.service';
 import { ProjetService } from './../../services/projet.service';
-import { DepartementService } from './../../services/departement.service';
 import { NbToastrService } from '@nebular/theme';
 import { MatDialog } from '@angular/material/dialog';
-import { SocieteService } from '../../services/societe.service';
+import { MatPaginator } from '@angular/material/paginator';
+
 @Component({
   selector: 'ngx-facture',
   templateUrl: './facture.component.html',
@@ -41,7 +41,6 @@ export class FactureComponent{
     const totalMonths = diffYears * 12 + diffMonths;
     this.numberOfMonths = totalMonths;
   }
- 
   calculateTache(type_tache: string, nombre_de_tache: number, cout_par_piece: number): number{
     if (type_tache === 'Journalier') {
       return nombre_de_tache * cout_par_piece * 30 * this.numberOfMonths;
@@ -80,7 +79,7 @@ calculateTotalDepartmentProjet(data: any[]): number {
 }
 
   async getTaches() {
-  await this.tacheService.getTaches().then(res => {
+  await this.tacheService.getTachesFacture().then(res => {
     this.tache_nom = res.data;
     this.tache_nom.forEach(tache => { 
       tache.societesList = tache.attributes.societe.data;
@@ -121,7 +120,7 @@ calculateTotalDepartmentProjet(data: any[]): number {
   });
 }
 async getProjets() {
-  await this.projetService.getProjets().then(res => {
+  await this.projetService.getProjetsFacture().then(res => {
     const updatedGroupedData: any[] = [];
     this.projet_nom = res.data;
     this.projet_nom.forEach(projet => { 

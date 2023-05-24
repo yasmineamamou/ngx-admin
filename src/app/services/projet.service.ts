@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjetService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private userService: UserService) { }
 
   async getProjetsById(id) {
     let promise = new Promise<any>((resolve, reject) => {
@@ -18,9 +19,23 @@ export class ProjetService {
     });
     return promise;
   }
-  async getProjets() {
+  async getProjetsFacture() {
     let promise = new Promise<any>((resolve, reject) => {
-      this.http.get(environment.url_backend+'/api/creation-projets?populate=*').toPromise().then(res => {
+      this.http.get(environment.url_backend+'/api/creation-projets/?populate=*').toPromise().then(res => {
+        resolve(res);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+    return promise;
+  }
+  async getProjets() {
+    let user: any; 
+    await this.userService.getUserById(JSON.parse(sessionStorage.getItem('user')).id).then(res=>{
+      user = res;
+    })
+    let promise = new Promise<any>((resolve, reject) => {
+      this.http.get(environment.url_backend+'/api/creation-projets?filters\[departement\][id][$eq]='+user.departement.id+'&&populate=*').toPromise().then(res => {
         resolve(res);
       }).catch(err=>{
         reject(err);

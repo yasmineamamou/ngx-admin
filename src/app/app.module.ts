@@ -22,7 +22,7 @@ import {
 } from '@nebular/theme';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AuthInterceptorComponent } from './auth-interceptor/auth-interceptor.component';
-import { HTTP_INTERCEPTORS } from '@angular/common/http'; 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 @NgModule({
   declarations: [AppComponent],
   imports: [

@@ -5,7 +5,6 @@ import { AddProjetComponent } from "./add-projet/add-projet.component";
 import { EditProjetComponent } from "./edit-projet/edit-projet.component";
 import { NbToastrService } from '@nebular/theme';
 import { UserService } from '../../services/user.service';
-
 @Component({
   selector: 'ngx-projet',
   templateUrl: './projet.component.html',
@@ -45,8 +44,6 @@ export class ProjetComponent {
       this.toastrService.danger("Erreur!! can't get projet", "Erreur");
     });
   }
-  
-  
   edit(projet) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = false;
@@ -70,7 +67,7 @@ export class ProjetComponent {
     }
     this.getProjets();
   }
- 
+}
 /*
 async getUserProjects() {
   try {
@@ -105,4 +102,4 @@ hasMatchingDepartments(): boolean {
   return this.matchingProjects.length > 0;
 }
 */
-}
+

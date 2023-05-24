@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TacheService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private userService: UserService) { }
 
   async getTachesById(id) {
     let promise = new Promise<any>((resolve, reject) => {
@@ -19,9 +20,23 @@ export class TacheService {
     });
     return promise;
   }
-  async getTaches() {
+  async getTachesFacture() {
     let promise = new Promise<any>((resolve, reject) => {
-      this.http.get(environment.url_backend+'/api/creation-des-taches?populate=*').toPromise().then(res => {
+      this.http.get(environment.url_backend+'/api/creation-des-taches/?populate=*').toPromise().then(res => {
+        resolve(res);
+      }).catch(err=>{
+        reject(err);
+      });
+    });
+    return promise;
+  }
+  async getTaches() {
+    let user: any; 
+    await this.userService.getUserById(JSON.parse(sessionStorage.getItem('user')).id).then(res=>{
+      user = res;
+    })
+    let promise = new Promise<any>((resolve, reject) => {
+      this.http.get(environment.url_backend+'/api/creation-des-taches?filters\[departement\][id][$eq]='+user.departement.id+'&&populate=*').toPromise().then(res => {
         resolve(res);
       }).catch(err=>{
         reject(err);
