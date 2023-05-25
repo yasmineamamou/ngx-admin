@@ -4,6 +4,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AddTypeComponent } from "./add-type/add-type.component";
 import { EditTypeComponent } from "./edit-type/edit-type.component";
 import { NbToastrService } from '@nebular/theme';
+import { UserService } from '../../services/user.service';
 @Component({
   selector: 'ngx-type',
   templateUrl: './type.component.html',
@@ -14,7 +15,7 @@ export class TypeComponent {
   type_nom: any;
   type: any[] = [];
   createdByName: string[] = [];
-  constructor(private typeService: TypeService, private toastrService: NbToastrService, public dialog: MatDialog) { }
+  constructor(private typeService: TypeService, private toastrService: NbToastrService, public dialog: MatDialog, private userService: UserService) { }
   openAddPopup() {
     const dialogRef = this.dialog.open(AddTypeComponent, {
       width: '48%',
@@ -59,4 +60,5 @@ export class TypeComponent {
     }
     this.getTypes();
   }
+
 }

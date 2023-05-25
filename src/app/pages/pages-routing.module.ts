@@ -42,7 +42,7 @@ const routes: Routes = [{
     },
     {
       path: '',
-      redirectTo: 'Type',
+      redirectTo: 'Tache',
       pathMatch: 'full',
     },
     {

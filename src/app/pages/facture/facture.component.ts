@@ -4,6 +4,13 @@ import { ProjetService } from './../../services/projet.service';
 import { NbToastrService } from '@nebular/theme';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { HttpClient } from '@angular/common/http';
+
+
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { htmlToPdfmake } from 'pdfmake/build/pdfmake';
 
 @Component({
   selector: 'ngx-facture',
@@ -26,13 +33,28 @@ export class FactureComponent{
   groupedData: any[] = [];
   filteredGroupedData: any[] = [];
   buttonPressed: boolean = false;
+  
 
-
-  constructor(private tacheService: TacheService,private projetService: ProjetService, private toastrService: NbToastrService, public dialog: MatDialog) { }
+  constructor(private tacheService: TacheService,private http: HttpClient,private projetService: ProjetService, private toastrService: NbToastrService, public dialog: MatDialog) { }
   ngOnInit() {
     this.getTaches();
     this.getProjets();
   }
+  selectedGroup: any;
+
+selectGroup(group: any) {
+  this.selectedGroup = group;
+}
+
+  generatePDFDetails(group: any) {
+    const url = 'http://localhost:4200//generate-pdf'; // Replace with your server endpoint for generating the PDF
+    const payload = { group };
+  
+    this.http.post(url, payload, { responseType: 'blob' }).subscribe((response: any) => {
+      const blob = new Blob([response], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url);
+    });}
   async calculateMonthsTache() {
     const start = new Date(this.startDate);
     const end = new Date(this.endDate);
@@ -56,6 +78,75 @@ export class FactureComponent{
       return ((nombre_de_tache * cout_par_piece)/12) * this.numberOfMonths;
     } 
   }
+  openPDFDetails() {
+    if (!this.selectedGroup) {
+      return;
+    }
+  
+    const docDefinition = {
+      content: [
+        {
+          columns: [
+            {
+              width: '50%',
+              text: [
+                { text: 'ZENGroupe\n', bold: true },
+                { text: 'Adresse: Gremda-Caïd, Ceinture Bourguiba\n', margin: [0, 10, 0, 0] },
+                'Code Postal: 3062\n',
+                { text: 'Ville/Pays: Sfax, Tunisie\n\n', margin: [0, 10, 0, 0] },
+              ]
+            },
+            {
+              columns: [
+                { text: `Client: ${this.selectedGroup.societe}`, alignment: 'right', bold: true }
+              ]
+            },
+          ]
+        },
+        {
+          table: {
+            headerRows: 1,
+            widths: ['*', 'auto', 'auto', 'auto'],
+            body: [
+              // Table header
+              ['Nom Projet', 'Date Début', 'Date Fin', 'Coût'],
+              // Table rows
+              ...this.selectedGroup.data.reduce((rows: any[], item: any) => {
+                item.projets.forEach((projet: any) => {
+                  rows.push([projet.attributes.nom_projet, projet.attributes.date_debut, projet.attributes.date_fin, projet.totalcost]);
+                });
+                return rows;
+              }, []),
+              // Total row
+              ['', '', { text: 'Total:', bold: true, alignment: 'right', margin: [0, 2, 0, 0] }, { text: `${this.calculateTotalDepartmentProjet(this.selectedGroup.data)}`, bold: true, alignment: 'right', margin: [0, 2, 0, 0] }]
+            ]
+          },
+          layout: {
+            hLineWidth: (i: number, node: any) => (i === 0 || i === node.table.body.length) ? 1 : 0,
+            vLineWidth: () => 0,
+            hLineColor: () => 'gray'
+          }
+        }
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10]
+        },
+        total: {
+          fontSize: 14,
+          bold: true,
+          margin: [0, 10, 0, 0]
+        }
+      }
+    };
+  
+    pdfMake.createPdf(docDefinition).open();
+  }
+  
+  
+  
   calculateTotalDepartementTaches(departements: any[]): number {
   let total = 0;
   for (const departement of departements) {
@@ -94,7 +185,8 @@ calculateTotalDepartmentProjet(data: any[]): number {
           societe: tache.societesList.attributes.Nom,
           departements: [{
             nom: tache.departementsList.attributes.nom,
-            taches: [tache]
+            taches: [tache],
+            showDetails: false,
           }]
         });
       } else {
@@ -105,7 +197,8 @@ calculateTotalDepartmentProjet(data: any[]): number {
           // If the departement is not found, create a new entry in the departements array
           this.groupedTaches[societeIndex].departements.push({
             nom: tache.departementsList.attributes.nom,
-            taches: [tache]
+            taches: [tache],
+            showDetails: false,
           });
         } else {
           // If the departement is found, push the tache to the existing departement's taches array
@@ -165,6 +258,9 @@ async getProjets() {
   .catch(err => {
     this.toastrService.danger("Erreur!! can't get projet", "Erreur");
   });
+}
+toggleDetails(group: any) {
+  group.showDetails = !group.showDetails;
 }
 
 calculateMatchingMonthsAndTotalCost(projet: any) {

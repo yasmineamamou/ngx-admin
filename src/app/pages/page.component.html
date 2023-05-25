@@ -1,0 +1,14 @@
+<ngx-one-column-layout *ngIf="userRole == 'Admin'">
+    <nb-menu [items]="menuAdmin"></nb-menu>
+    <router-outlet></router-outlet>
+  </ngx-one-column-layout>
+
+<ngx-one-column-layout *ngIf="userRole == 'Employer'">
+    <nb-menu [items]="menuEmployer"></nb-menu>
+    <router-outlet></router-outlet>
+  </ngx-one-column-layout>
+  
+<ngx-one-column-layout *ngIf="userRole == 'Facture'">
+    <nb-menu [items]="menuFacture"></nb-menu>
+    <router-outlet></router-outlet>
+  </ngx-one-column-layout>

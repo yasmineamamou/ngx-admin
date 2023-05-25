@@ -34,9 +34,11 @@ export class ProjetService {
     await this.userService.getUserById(JSON.parse(sessionStorage.getItem('user')).id).then(res=>{
       user = res;
     })
+    console.log("user"+JSON.stringify(user))
     let promise = new Promise<any>((resolve, reject) => {
       this.http.get(environment.url_backend+'/api/creation-projets?filters\[departement\][id][$eq]='+user.departement.id+'&&populate=*').toPromise().then(res => {
         resolve(res);
+        console.log("res"+res)
       }).catch(err=>{
         reject(err);
       });

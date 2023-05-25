@@ -1,6 +1,6 @@
 import { NbMenuItem  } from '@nebular/theme';
 import { icon } from 'leaflet';
-export const MENU_ITEMS: NbMenuItem[] = [
+export const MENU_ITEMS_Admin: NbMenuItem[] = [
   {
     title: 'Type de société',
     icon: 'cube-outline',
