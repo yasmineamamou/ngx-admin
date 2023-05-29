@@ -33,6 +33,8 @@ export class FactureComponent{
   groupedData: any[] = [];
   filteredGroupedData: any[] = [];
   buttonPressed: boolean = false;
+  nombreOfDays: number;
+  totalCost: any;
   
 
   constructor(private tacheService: TacheService,private http: HttpClient,private projetService: ProjetService, private toastrService: NbToastrService, public dialog: MatDialog) { }
@@ -62,10 +64,17 @@ selectGroup(group: any) {
     const diffMonths = end.getMonth() - start.getMonth();
     const totalMonths = diffYears * 12 + diffMonths;
     this.numberOfMonths = totalMonths;
+    let totalDays = 0;
+    for (let date = start; date <= end; date.setDate(date.getDate() + 1)) {
+      if (date.getDay() !== 0) { // Exclude Sundays (Sunday is represented by 0)
+        totalDays++;
+      }
+    }
+    this.nombreOfDays = totalDays - 1 ;
   }
   calculateTache(type_tache: string, nombre_de_tache: number, cout_par_piece: number): number{
     if (type_tache === 'Journalier') {
-      return nombre_de_tache * cout_par_piece * 30 * this.numberOfMonths;
+      return nombre_de_tache * cout_par_piece * this.nombreOfDays;
     }else if (type_tache === 'Hebdomadaire') {
       return nombre_de_tache * cout_par_piece * 4 * this.numberOfMonths;
     } else if (type_tache === 'Mensuel') {
@@ -78,7 +87,8 @@ selectGroup(group: any) {
       return ((nombre_de_tache * cout_par_piece)/12) * this.numberOfMonths;
     } 
   }
-  openPDFDetails() {
+  
+  openPDFDetailsProjet() {
     if (!this.selectedGroup) {
       return;
     }
@@ -86,14 +96,22 @@ selectGroup(group: any) {
     const docDefinition = {
       content: [
         {
+          text: 'Facture des Projets \n\n',
+          style: 'title',
+          alignment: 'center',
+          margin: [0, 0, 0, 10],
+          bold:true
+        },
+        {
           columns: [
             {
               width: '50%',
               text: [
-                { text: 'ZENGroupe\n', bold: true },
+                { text: 'ZENGroupe\n\n', bold: true },
                 { text: 'Adresse: Gremda-Caïd, Ceinture Bourguiba\n', margin: [0, 10, 0, 0] },
                 'Code Postal: 3062\n',
                 { text: 'Ville/Pays: Sfax, Tunisie\n\n', margin: [0, 10, 0, 0] },
+                { text: `Facturation du ${this.startDate} jusqu'au ${this.endDate}\n\n`, bold: true }
               ]
             },
             {
@@ -109,7 +127,7 @@ selectGroup(group: any) {
             widths: ['*', 'auto', 'auto', 'auto'],
             body: [
               // Table header
-              ['Nom Projet', 'Date Début', 'Date Fin', 'Coût'],
+              ['Nom du Projet', 'Date Début', 'Date Fin', 'Coût'],
               // Table rows
               ...this.selectedGroup.data.reduce((rows: any[], item: any) => {
                 item.projets.forEach((projet: any) => {
@@ -122,11 +140,94 @@ selectGroup(group: any) {
             ]
           },
           layout: {
-            hLineWidth: (i: number, node: any) => (i === 0 || i === node.table.body.length) ? 1 : 0,
-            vLineWidth: () => 0,
-            hLineColor: () => 'gray'
+            hLineWidth: (i: number, node: any) => (i === 0 || i === 1) ? 2 : 1,
+            vLineWidth: (i: number, node: any) => (i === 0 || i === node.table.body.length) ? 2 : 1,
+            hLineColor: () => 'black',
+            vLineColor: () => 'black'
           }
         }
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10]
+        },
+        total: {
+          fontSize: 14,
+          bold: true,
+          margin: [0, 10, 0, 0]
+        }
+      }
+    };
+  
+    pdfMake.createPdf(docDefinition).open();
+  }
+  openPDFDetailsTache() {
+    if (!this.selectedGroup) {
+      return;
+    }
+  
+    const docDefinition = {
+      content: [
+        {
+          text: 'Facture des Taches \n\n',
+          style: 'title',
+          alignment: 'center',
+          margin: [0, 0, 0, 10],
+          bold:true
+        },
+        {
+          columns: [
+           
+            {
+              width: '50%',
+              text: [
+                { text: 'ZENGroupe\n\n', bold: true },
+                { text: 'Adresse: Gremda-Caïd, Ceinture Bourguiba\n', margin: [0, 10, 0, 0] },
+                'Code Postal: 3062\n',
+                { text: 'Ville/Pays: Sfax, Tunisie\n\n', margin: [0, 10, 0, 0] },
+                { text: `Facturation du ${this.startDate} jusqu'au ${this.endDate}\n\n`, bold: true }
+              ]
+            },
+            {
+              columns: [
+                { text: `Client: ${this.selectedGroup.societe}`, alignment: 'right', bold: true }
+              ]
+            },
+          ]
+        },
+        {
+          table: {
+            headerRows: 1,
+            widths: ['*', 'auto', 'auto', 'auto', 'auto'],
+            body: [
+              // Table header
+              ['Nom de tache', 'Type de tache', 'Nombre de Tache', 'Coût Unitaire', 'Coût'],
+              // Table rows
+              ...this.selectedGroup.departements.reduce((rows: any[], departement: any) => {
+                departement.taches.forEach((tache: any) => {
+                  rows.push([
+                    tache.attributes.nom_tache,
+                    tache.attributes.type_tache,
+                    tache.attributes.nombre_de_tache,
+                    tache.attributes.cout_par_piece,
+                    this.calculateTache(tache.attributes.type_tache, tache.attributes.nombre_de_tache, tache.attributes.cout_par_piece)
+                  ]);
+                });
+                return rows;
+              }, []),
+              ['', '','', { text: 'Total:', bold: true, alignment: 'right', margin: [0, 2, 0, 0] }, { text: `${this.calculateTotalDepartementTaches(this.selectedGroup.departements)}`, bold: true, alignment: 'right', margin: [0, 2, 0, 0] }]
+            ]
+          },
+          layout: {
+            hLineWidth: (i: number, node: any) => (i === 0 || i === 1) ? 2 : 1,
+            vLineWidth: (i: number, node: any) => (i === 0 || i === node.table.body.length) ? 2 : 1,
+            hLineColor: () => 'black',
+            vLineColor: () => 'black'
+          }
+        },
+      
       ],
       styles: {
         header: {
@@ -147,6 +248,14 @@ selectGroup(group: any) {
   
   
   
+  calculateTotalAllDepartementsTaches(): number {
+    let total = 0;
+    for (const group of this.groupedTaches) {
+      total += this.calculateTotalDepartementTaches(group.departements);
+    }
+    return total;
+  }
+  
   calculateTotalDepartementTaches(departements: any[]): number {
   let total = 0;
   for (const departement of departements) {
@@ -157,6 +266,16 @@ selectGroup(group: any) {
   }
   return total;
 }
+calculateTotalAllDepartmentsProjets(): number {
+  let cumulativeTotalCost = 0;
+
+  for (const group of this.groupedData) {
+    cumulativeTotalCost += this.calculateTotalDepartmentProjet(group.data);
+  }
+
+  return cumulativeTotalCost;
+}
+
 calculateTotalDepartmentProjet(data: any[]): number {
   let cumulativeTotalCost = 0;
 
@@ -292,6 +411,7 @@ calculateMatchingMonthsAndTotalCost(projet: any) {
   projet.matchingMonths = matchingMonths; 
   projet.costPerMonth = projet.attributes.estimation_cout / projet.numberOfMonths;
   projet.totalcost = matchingMonths*projet.costPerMonth;
+  this.totalCost = projet.totalcost;
 }
 
 
@@ -314,8 +434,204 @@ calculateNumberOfMonths(startDate: Date, endDate: Date): number {
 
   return (endYear - startYear) * 12 + (endMonth - startMonth);
 }
-hasNonZeroTotalCost(projets: any[]): boolean {
-  return projets.some(projet => projet.totalcost !== 0);
+
+openPDFTache() {
+  if (!this.startDate || !this.endDate) {
+    return;
+  }
+
+  const tableRows = this.groupedTaches.reduce((rows: any[], group: any) => {
+    const groupRows = group.departements.map((departement: any, index: number) => {
+      if (index === 0) {
+        // First row for each group
+        return [
+          { text: group.societe, rowSpan: group.departements.length, style: 'societeCell' },
+          { text: departement.nom, style: 'departementCell' },
+          this.calculateTacheRows(departement.taches),
+          { text: this.calculateTotalDepartementTaches(group.departements), rowSpan: group.departements.length, style: 'totalCell' },
+        ];
+      } else {
+        // Empty rows for subsequent departments within the same group
+        return [
+          { text: '', style: 'societeCell' },
+          { text: departement.nom, style: 'departementCell' },
+          this.calculateTacheRows(departement.taches),
+          ''
+        ];
+      }
+    });
+
+    return rows.concat(groupRows);
+  }, []);
+  const totalAllDepartments = this.calculateTotalAllDepartementsTaches();
+
+  // Add the total line at the bottom of the table
+  tableRows.push([
+    { text: 'Total:', colSpan: 3, alignment: 'right', bold: true },
+    '',
+    '',
+    { text: totalAllDepartments, style: 'totalCell', bold: true }
+  ]);
+  const docDefinition = {
+    content: [
+      {
+        text: 'Facture Totale des Taches \n\n',
+        style: 'title',
+        alignment: 'center',
+        margin: [0, 0, 0, 10],
+        bold:true
+      },
+      {
+        columns: [
+          {
+            width: '50%',
+            text: [
+              { text: 'ZENGroupe\n\n', bold: true },
+              { text: 'Adresse: Gremda-Caïd, Ceinture Bourguiba\n', margin: [0, 10, 0, 0] },
+              'Code Postal: 3062\n',
+              { text: 'Ville/Pays: Sfax, Tunisie\n\n', margin: [0, 10, 0, 0] },
+              { text: `Facturation du ${this.startDate} jusqu'au ${this.endDate}\n\n`, bold: true }
+            ]
+          },
+        ]
+      },
+      {
+        table: {
+          headerRows: 1,
+          widths: ['auto', 'auto', '*', 'auto'],
+          body: [
+            // Table header
+            [
+              { text: 'Société bénéficiaire', bold: true },
+              { text: 'Département exécutant', bold: true },
+              { text: 'Coût', bold: true },
+              { text: 'Total', bold: true }
+            ],
+            // Table rows
+            ...tableRows,
+
+          ]
+        },
+        layout: {
+          hLineWidth: () => 1,
+          vLineWidth: () => 1, // Add a vertical line between each cell
+          hLineColor: () => 'black',
+          vLineColor: () => 'black', // Set the color of the vertical line
+        }
+      }
+    ],
+    // ...
+  };
+  pdfMake.createPdf(docDefinition).open();
+}
+calculateTacheRows(taches: any[]) {
+  return taches.map((tache: any) => {
+    return {
+      text: this.calculateTache(tache.attributes.type_tache, tache.attributes.nombre_de_tache, tache.attributes.cout_par_piece),
+      style: 'tacheCell'
+    };
+  });
+}
+calculateProjetRows(projets: any[]) {
+  return projets.map(() => {
+    return {
+      text: this.totalCost ,
+      style: 'projetCell'
+    };
+  });
+}
+
+
+openPDFProjet() {
+  if (!this.startDate || !this.endDate) {
+    return;
+  }
+
+  const tableRows = this.groupedData.reduce((rows: any[], group: any) => {
+    const groupRows = group.data.map((departements: any, index: number) => {
+      if (index === 0) {
+        // First row for each group
+        return [
+          { text: group.societe, rowSpan: group.data.length, style: 'societeCell' },
+          { text: departements.departement, style: 'departementCell' },
+           departements.projets.map((projet: any) => {
+            return projet.totalcost;
+          }),
+          { text: this.calculateTotalDepartmentProjet(group.data), rowSpan: group.data.length, style: 'totalCell' },
+        ];
+      } else {
+        // Empty rows for subsequent departments within the same group
+        return [
+          { text: '', style: 'societeCell' },
+          { text: departements.departement, style: 'departementCell' },
+          departements.projets.map(() => ''),
+          ''
+        ];
+      }
+    });
+
+    return rows.concat(groupRows);
+  }, []);
+  const totalAllDepartments = this.calculateTotalAllDepartmentsProjets();
+
+  // Add the total line at the bottom of the table
+  tableRows.push([
+    { text: 'Total:', colSpan: 3, alignment: 'right', bold: true },
+    '',
+    '',
+    { text: totalAllDepartments, style: 'totalCell', bold: true }
+  ]);
+  const docDefinition = {
+    content: [
+      {
+        text: 'Facture Totale des projets \n\n',
+        style: 'title',
+        alignment: 'center',
+        margin: [0, 0, 0, 10],
+        bold:true
+      },
+      {
+        columns: [
+          {
+            width: '50%',
+            text: [
+              { text: 'ZENGroupe\n\n', bold: true },
+              { text: 'Adresse: Gremda-Caïd, Ceinture Bourguiba\n', margin: [0, 10, 0, 0] },
+              'Code Postal: 3062\n',
+              { text: 'Ville/Pays: Sfax, Tunisie\n\n', margin: [0, 10, 0, 0] },
+              { text: `Facturation du ${this.startDate} jusqu'au ${this.endDate}\n\n`, bold: true }
+            ]
+          },
+        ]
+      },
+      {
+        table: {
+          headerRows: 1,
+          widths: ['auto', 'auto', '*', 'auto'],
+          body: [
+            // Table header
+            [
+              { text: 'Société bénéficiaire', bold: true },
+              { text: 'Département exécutant', bold: true },
+              { text: 'Coût', bold: true },
+              { text: 'Total', bold: true }
+            ],
+            // Table rows
+            ...tableRows,
+
+          ]
+        },
+        layout: {
+          hLineWidth: () => 1,
+          vLineWidth: () => 1, // Add a vertical line between each cell
+          hLineColor: () => 'black',
+          vLineColor: () => 'black', // Set the color of the vertical line
+        }
+      }
+    ],
+    // ...
+  };
+  pdfMake.createPdf(docDefinition).open();
 }
 
 }

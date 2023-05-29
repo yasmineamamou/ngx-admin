@@ -21,6 +21,8 @@
     <td>
       <p>Nombre de moins: {{ numberOfMonths }}</p>
     </td>
+    <td><tr><button  class="btn btn-success" (click)="openPDFTache()"> Facture Taches</button></tr>
+   <tr><button  class="btn btn-success"  (click)="openPDFProjet()"> Facture Projets</button></tr></td>
   </tr>
   <tr>
     <th>Société bénificiaire</th>
@@ -29,11 +31,11 @@
     <th>Totale</th>
   </tr>
   <!-- *ngIf="startDate && endDate"-->
-   <ng-container>
+   <ng-container *ngIf="startDate && endDate">
     <h4>Taches:</h4>
     <tr *ngFor="let group of groupedTaches">
       <td>
-        <h2 (click)="toggleDetails(group)">{{ group.societe }}</h2>
+        <h2 (click)="selectGroup(group)"><i class="bi bi-plus-circle-fill" (click)="toggleDetails(group)">  {{ group.societe }}</i></h2>
       </td>
       <td colspan="2">
         <div *ngFor="let departement of group.departements">
@@ -65,7 +67,7 @@
     <tr *ngFor="let group of groupedData">
       <ng-container *ngIf="calculateTotalDepartmentProjet(group.data) !== 0">
         <td>
-          <h2 (click)="toggleDetails(group)" (click)="selectGroup(group);">{{ group.societe }}</h2>
+          <h2 (click)="selectGroup(group);"><i class="bi bi-plus-circle-fill" (click)="toggleDetails(group)">  {{ group.societe }}</i></h2>
         </td>
         <td colspan="2">
           <div *ngFor="let item of group.data">
@@ -100,6 +102,17 @@
   </ng-container>
 </table>
 <div *ngIf="selectedGroup">
-  <h3>Société: {{ selectedGroup.societe }}</h3>
-  <button  (click)="openPDFDetails()">Facture PDF</button>
+  <button  id="fixed-button"  class="btn btn-success" (click)="openPDFDetailsProjet()" (click)="openPDFDetailsTache()">Facture PDF</button>
 </div>
+<script>
+  window.addEventListener('scroll', function() {
+    var button = document.querySelector('#fixed-button');
+    var scrollPosition = window.scrollY || document.documentElement.scrollTop;
+
+    if (scrollPosition > 100) {
+      button.classList.add('show-button');
+    } else {
+      button.classList.remove('show-button');
+    }
+  });
+</script>

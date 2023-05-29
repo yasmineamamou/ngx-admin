@@ -36,5 +36,4 @@ export const MENU_ITEMS_Admin: NbMenuItem[] = [
     icon: 'credit-card-outline',
     link: '/pages/Facture',
   },
-
 ];

@@ -8,6 +8,7 @@ $icon-size: 20px;
   i {
     color: $icon-color;
     font-size: $icon-size;
+
   }
 }
 .title h3{
@@ -34,4 +35,12 @@ ul{
 }
 .text-center{
   float: right;
+}
+#fixed-button {
+  position: fixed;
+  bottom: 20px;
+  left: 270px;
+}
+.btn{
+  margin-bottom: 10px;
 }
