@@ -3,14 +3,12 @@ import { TacheService } from './../../services/tache.service';
 import { ProjetService } from './../../services/projet.service';
 import { NbToastrService } from '@nebular/theme';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
 import { HttpClient } from '@angular/common/http';
 
 
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import { htmlToPdfmake } from 'pdfmake/build/pdfmake';
 
 @Component({
   selector: 'ngx-facture',
@@ -35,14 +33,13 @@ export class FactureComponent{
   buttonPressed: boolean = false;
   nombreOfDays: number;
   totalCost: any;
-  
+  selectedGroup: any;
 
   constructor(private tacheService: TacheService,private http: HttpClient,private projetService: ProjetService, private toastrService: NbToastrService, public dialog: MatDialog) { }
   ngOnInit() {
     this.getTaches();
     this.getProjets();
   }
-  selectedGroup: any;
 
 selectGroup(group: any) {
   this.selectedGroup = group;
@@ -56,7 +53,8 @@ selectGroup(group: any) {
       const blob = new Blob([response], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       window.open(url);
-    });}
+    });
+  }
   async calculateMonthsTache() {
     const start = new Date(this.startDate);
     const end = new Date(this.endDate);
@@ -87,7 +85,6 @@ selectGroup(group: any) {
       return ((nombre_de_tache * cout_par_piece)/12) * this.numberOfMonths;
     } 
   }
-  
   openPDFDetailsProjet() {
     if (!this.selectedGroup) {
       return;
@@ -242,12 +239,8 @@ selectGroup(group: any) {
         }
       }
     };
-  
     pdfMake.createPdf(docDefinition).open();
   }
-  
-  
-  
   calculateTotalAllDepartementsTaches(): number {
     let total = 0;
     for (const group of this.groupedTaches) {
@@ -255,7 +248,6 @@ selectGroup(group: any) {
     }
     return total;
   }
-  
   calculateTotalDepartementTaches(departements: any[]): number {
   let total = 0;
   for (const departement of departements) {
@@ -275,7 +267,6 @@ calculateTotalAllDepartmentsProjets(): number {
 
   return cumulativeTotalCost;
 }
-
 calculateTotalDepartmentProjet(data: any[]): number {
   let cumulativeTotalCost = 0;
 
@@ -284,10 +275,8 @@ calculateTotalDepartmentProjet(data: any[]): number {
       cumulativeTotalCost += projet.totalcost;
     }
   }
-
   return cumulativeTotalCost;
 }
-
   async getTaches() {
   await this.tacheService.getTachesFacture().then(res => {
     this.tache_nom = res.data;
@@ -338,17 +327,13 @@ async getProjets() {
     this.projet_nom.forEach(projet => { 
       projet.societesList = projet.attributes.societe.data;
       projet.departementsList = projet.attributes.departement.data;
-
       const projectEndDate = new Date(projet.attributes.date_fin);
       const today = new Date();
-
       // Skip printing projects whose date_fin has not passed
       if (projectEndDate > today) {
         return;
       }
-    
       const societeIndex = this.groupedData.findIndex(group => group.societe === projet.societesList.attributes.Nom);
-
       if (societeIndex === -1) {
         updatedGroupedData.push({
           societe: projet.societesList.attributes.Nom,
@@ -369,7 +354,6 @@ async getProjets() {
           this.groupedData[societeIndex].data[departementIndex].projets.push(projet);
         }
       }
-      
       this.groupedData = updatedGroupedData;
       this.calculateMatchingMonthsAndTotalCost(projet);
     });
@@ -381,9 +365,7 @@ async getProjets() {
 toggleDetails(group: any) {
   group.showDetails = !group.showDetails;
 }
-
 calculateMatchingMonthsAndTotalCost(projet: any) {
-
   const projectStartDate = new Date(projet.attributes.date_debut);
   const projectEndDate = new Date(projet.attributes.date_fin);
   const selectedStartDate = new Date(this.startDate);
@@ -393,16 +375,12 @@ calculateMatchingMonthsAndTotalCost(projet: any) {
   const endYear = selectedEndDate.getFullYear();
   const startMonth = selectedStartDate.getMonth();
   const endMonth = selectedEndDate.getMonth();
-
   let matchingMonths = 0;
-
   for (let year = startYear; year <= endYear; year++) {
     const monthStart = year === startYear ? startMonth : 0;
     const monthEnd = year === endYear ? endMonth : 11;
-
     for (let month = monthStart; month <= monthEnd; month++) {
       const currentDate = new Date(year, month);
-
       if (currentDate >= projectStartDate && currentDate <= projectEndDate) {
         matchingMonths++;
       }
@@ -413,14 +391,11 @@ calculateMatchingMonthsAndTotalCost(projet: any) {
   projet.totalcost = matchingMonths*projet.costPerMonth;
   this.totalCost = projet.totalcost;
 }
-
-
 updateGroupedData() {
   this.groupedData = []; // Clear the existing data before updating
 
   this.getProjets();
 }
-
 calculateMonths() {
   if (this.startDate && this.endDate) {
     this.updateGroupedData();
@@ -431,15 +406,12 @@ calculateNumberOfMonths(startDate: Date, endDate: Date): number {
   const startMonth = startDate.getMonth();
   const endYear = endDate.getFullYear();
   const endMonth = endDate.getMonth();
-
   return (endYear - startYear) * 12 + (endMonth - startMonth);
 }
-
 openPDFTache() {
   if (!this.startDate || !this.endDate) {
     return;
   }
-
   const tableRows = this.groupedTaches.reduce((rows: any[], group: any) => {
     const groupRows = group.departements.map((departement: any, index: number) => {
       if (index === 0) {
@@ -460,11 +432,9 @@ openPDFTache() {
         ];
       }
     });
-
     return rows.concat(groupRows);
   }, []);
   const totalAllDepartments = this.calculateTotalAllDepartementsTaches();
-
   // Add the total line at the bottom of the table
   tableRows.push([
     { text: 'Total:', colSpan: 3, alignment: 'right', bold: true },
@@ -540,13 +510,10 @@ calculateProjetRows(projets: any[]) {
     };
   });
 }
-
-
 openPDFProjet() {
   if (!this.startDate || !this.endDate) {
     return;
   }
-
   const tableRows = this.groupedData.reduce((rows: any[], group: any) => {
     const groupRows = group.data.map((departements: any, index: number) => {
       if (index === 0) {
@@ -569,11 +536,9 @@ openPDFProjet() {
         ];
       }
     });
-
     return rows.concat(groupRows);
   }, []);
   const totalAllDepartments = this.calculateTotalAllDepartmentsProjets();
-
   // Add the total line at the bottom of the table
   tableRows.push([
     { text: 'Total:', colSpan: 3, alignment: 'right', bold: true },
@@ -618,7 +583,6 @@ openPDFProjet() {
             ],
             // Table rows
             ...tableRows,
-
           ]
         },
         layout: {
@@ -633,5 +597,4 @@ openPDFProjet() {
   };
   pdfMake.createPdf(docDefinition).open();
 }
-
 }
