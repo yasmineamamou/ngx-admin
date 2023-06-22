@@ -21,8 +21,8 @@ export class UserComponent {
 
   openAddPopup() {
     const dialogRef = this.dialog.open(AddUserComponent, {
-      width: '52%',
-      height: '75%',
+      width: '57%',
+      height: '90%',
     });
     dialogRef.afterClosed().subscribe(async result => {
       this.getUsers();
@@ -46,8 +46,8 @@ export class UserComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
-    dialogConfig.height="75%";
-    dialogConfig.width = "52%";
+    dialogConfig.height="90%";
+    dialogConfig.width = "57%";
     dialogConfig.data = users.id;
     const dialogRef = this.dialog.open(EditUserComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(async result => {

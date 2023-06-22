@@ -21,21 +21,16 @@
     <td>
       <p>Nombre de moins: {{ numberOfMonths }}</p>
     </td>
-    <td><tr><button  class="btn btn-success" (click)="openPDFTache()"> Facture Taches</button></tr>
-   <tr><button  class="btn btn-success"  (click)="openPDFProjet()"> Facture Projets</button></tr></td>
   </tr>
   <tr>
     <th>Société bénificiaire</th>
     <th>Département exécutant</th>
-    <th>cout</th>
-    <th>Totale</th>
   </tr>
-  <!-- *ngIf="startDate && endDate"-->
    <ng-container *ngIf="startDate && endDate">
     <h4>Taches:</h4>
     <tr *ngFor="let group of groupedTaches">
       <td>
-        <h2 (click)="selectGroup(group)"><i class="bi bi-plus-circle-fill" (click)="toggleDetails(group)">  {{ group.societe }}</i></h2>
+        <h2 (click)="selectGroup(group)">  {{ group.societe }}</h2>
       </td>
       <td colspan="2">
         <div *ngFor="let departement of group.departements">
@@ -44,71 +39,33 @@
               <h3>{{ departement.nom }}</h3>
             </div>
           </td>
-          <td style="width: 270px;">
-            <ul style="float: left;">
-              <li *ngFor="let tache of departement.taches">
-                <ng-container *ngIf="group.showDetails">
-                  <span>Nom:{{ tache.attributes.nom_tache }} </span>
-                  <span>Type:{{ tache.attributes.type_tache }}</span>
-                </ng-container>
-                <p>
-                  {{ calculateTache(tache.attributes.type_tache, tache.attributes.nombre_de_tache, tache.attributes.cout_par_piece) }}
-                </p>
-              </li>
-            </ul>
-          </td>
         </div>
-      </td>
-      <td>
-        {{ calculateTotalDepartementTaches(group.departements) }}
       </td>
     </tr>
     <h4>Projets:</h4>
     <tr *ngFor="let group of groupedData">
       <ng-container *ngIf="calculateTotalDepartmentProjet(group.data) !== 0">
         <td>
-          <h2 (click)="selectGroup(group);"><i class="bi bi-plus-circle-fill" (click)="toggleDetails(group)">  {{ group.societe }}</i></h2>
+          <h2 (click)="selectGroup(group);">  {{ group.societe }}</h2>
         </td>
         <td colspan="2">
           <div *ngFor="let item of group.data">
         <td style="width: 410px;vertical-align: top;">
           <h3> {{ item.departement }}</h3>
         </td>
-        <td>
-          <ul style="float: right;">
-            <li *ngFor="let projet of item.projets">
-              <ng-container *ngIf="group.showDetails">
-                <span>{{ projet.attributes.nom_projet }} </span>
-                <p>
-                <span> DateDebut: {{ projet.attributes.date_debut }} </span>
-                <span> DateFin: {{ projet.attributes.date_fin }} </span>
-              </p>
-              </ng-container>
-              <p>
-              <ng-container *ngIf="projet.totalcost !== 0">
-                {{ projet.totalcost }}
-              </ng-container>
-            </p>
-            </li>
-          </ul>
-        </td>
         </div>
-        </td>
-        <td>
-          {{ calculateTotalDepartmentProjet(group.data) }}
         </td>
       </ng-container>
     </tr>
   </ng-container>
 </table>
 <div *ngIf="selectedGroup">
-  <button  id="fixed-button"  class="btn btn-success" (click)="openPDFDetailsProjet()" (click)="openPDFDetailsTache()">Facture PDF</button>
+  <button  id="fixed-button"  class="btn btn-success" (click)="openPDFDetailsProjet()" (click)="openPDFDetailsTache()" (click)="addFactureProjet()" (click)="addFactureTache()">Facture PDF</button>
 </div>
 <script>
   window.addEventListener('scroll', function() {
     var button = document.querySelector('#fixed-button');
     var scrollPosition = window.scrollY || document.documentElement.scrollTop;
-
     if (scrollPosition > 100) {
       button.classList.add('show-button');
     } else {

@@ -17,7 +17,7 @@ export class DepartementComponent {
   openAddPopup() {
     const dialogRef = this.dialog.open(AddDepartementComponent, {
       width: '40%',
-      height: '60%',
+      height: '80%',
     });
     dialogRef.afterClosed().subscribe(async result => {
       this.getDepartements();
@@ -42,7 +42,7 @@ export class DepartementComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
-    dialogConfig.height = "60%";
+    dialogConfig.height = "80%";
     dialogConfig.width = "40%";
     dialogConfig.data = departement.id;
     const dialogRef = this.dialog.open(EditDepartementComponent, dialogConfig);

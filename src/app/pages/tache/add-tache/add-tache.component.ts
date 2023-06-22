@@ -19,6 +19,7 @@ export class AddTacheComponent {
   selectedDepartementId: any;
   user_nom: any;
   selectedUserId: any;
+  newTacheDate: any;
 
   constructor(private tacheService: TacheService, private toastrService: NbToastrService, public dialog: MatDialogRef<TacheComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
@@ -39,18 +40,12 @@ export class AddTacheComponent {
         tacheDepartement.push(element);
       }
     });
-   /* let tacheUser: any[]=[];
-    this.user_nom.forEach(element => {
-      if(element.checked == true){
-        tacheUser.push(element);
-      }
-    });*/
-    if ( this.newTacheName.trim() ==='' || this.newTacheDescription.trim() ==='' || tacheSociete.length ==0 || tacheDepartement.length ==0 || this.newTacheCout==0 || this.newTacheNbre==0 || this.newTacheType.trim()===''){
+    if ( this.newTacheName.trim() ==='' || tacheSociete.length ==0 || tacheDepartement.length ==0 || this.newTacheCout==0 || this.newTacheNbre==0 || this.newTacheType.trim()===''){
       this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
     }
     else{
       
-    let tacheData = { nom_tache: this.newTacheName , Description: this.newTacheDescription, cout_par_piece: this.newTacheCout, type_tache: this.newTacheType, nombre_de_tache: this.newTacheNbre, departement: tacheDepartement, societe: tacheSociete};
+    let tacheData = { nom_tache: this.newTacheName , Description: this.newTacheDescription, date:this.newTacheDate, cout_par_piece: this.newTacheCout, type_tache: this.newTacheType, nombre_de_tache: this.newTacheNbre, departement: tacheDepartement, societe: tacheSociete};
     await this.tacheService.addTache(tacheData).then(res => {
         console.log("new tache "+res.data);
         this.getSocietes();
@@ -102,25 +97,5 @@ export class AddTacheComponent {
       }
     });
   }}
- /* async getUsers() {
-    await this.tacheService.getUsers().then(res => {
-      this.user_nom = res.data;
-      this.user_nom.forEach(use => {
-        use.usersList = use.attributes.users.data;
-        console.log(JSON.stringify(use.usersList));
-        }); 
-    }).catch(err => {
-        console.log(err);
-    });
-  }
-  async selectUser(user) {
-    this.user_nom.forEach((use) => {
-      if (use.id === user.id) {
-        use.checked = true;
-        this.selectedUserId = use.id;
-      } else {
-        use.checked = false;
-      }
-    });
-  }*/
+
 

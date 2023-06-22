@@ -18,8 +18,8 @@ export class TacheComponent {
 
   openAddPopup() {
     const dialogRef = this.dialog.open(AddTacheComponent, {
-      width: '58%',
-      height: '95%',
+      width: '60%',
+      height: '100%',
     });
     dialogRef.afterClosed().subscribe(async result => {
       this.getTaches();
@@ -45,8 +45,8 @@ export class TacheComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
-    dialogConfig.height="95%";
-    dialogConfig.width = "58%";
+    dialogConfig.height="100%";
+    dialogConfig.width = "60%";
     dialogConfig.data = tache.id;
     const dialogRef = this.dialog.open(EditTacheComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(async result => {

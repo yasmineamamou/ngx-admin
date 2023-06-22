@@ -63,7 +63,7 @@ export class EditTacheComponent {
     })
   }
   async editTache() {
-    if (this.tache_nom.trim() ==='' || this.tache_description.trim() ==='' ||this.tache_nbre==0 || this.tache_cout==0){
+    if (this.tache_nom.trim() ==='' ||this.tache_nbre==0 || this.tache_cout==0){
       this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
     }
     else{

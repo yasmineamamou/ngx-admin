@@ -21,8 +21,8 @@ export class ProjetComponent {
 
   openAddPopup() {
     const dialogRef = this.dialog.open(AddProjetComponent, {
-      width: '62%',
-      height: '90%',
+      width: '65%',
+      height: '100%',
     });
     dialogRef.afterClosed().subscribe(async result => {
       this.getProjets();
@@ -48,8 +48,8 @@ export class ProjetComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
-    dialogConfig.height="90%";
-    dialogConfig.width = "62%";
+    dialogConfig.height="100%";
+    dialogConfig.width = "65%";
     dialogConfig.data = projet.id;
     const dialogRef = this.dialog.open(EditProjetComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(async result => {

@@ -39,6 +39,14 @@
                     </ul>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        <label for="name">Date</label>
+                        <input id="name" type="date" class="form-control" [(ngModel)]="newTacheDate" name="newTacheDate">
+                    </div>
+                </td>
+            </tr>
         <tr>
             <td>
                 <ul>
@@ -69,6 +77,10 @@
                                 <li>
                                     <input type="radio" id="Annuel" name="option" value="Annuel" [(ngModel)]="newTacheType">
                                     <label>Annuel</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="Occasionnelle" name="option" value="Occasionnelle" [(ngModel)]="newTacheType">
+                                    <label>Occasionnelle</label>
                                 </li>
                             </ul>
                         </div>
