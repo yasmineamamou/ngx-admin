@@ -36,7 +36,7 @@ export class FactureComponent{
   newtotalTTC: number;
   newdateFacturation: DateConstructor;
   pdfBlob: any;
-
+  matchingMonths: boolean = false;
   constructor(private tacheService: TacheService,private factureService: FactureService,private http: HttpClient,private projetService: ProjetService, private toastrService: NbToastrService, public dialog: MatDialog) { }
   ngOnInit() {
     this.getTaches();
@@ -72,6 +72,7 @@ selectGroup(group: any) {
     }
     this.nombreOfDays = totalDays - 1 ;
   }
+  
   calculateTache(type_tache: string, nombre_de_tache: number, cout_par_piece: number): number{
     if (type_tache === 'Journalier') {
       return nombre_de_tache * cout_par_piece * this.nombreOfDays;
@@ -86,8 +87,113 @@ selectGroup(group: any) {
     } else if (type_tache === 'Annuel') {
       return ((nombre_de_tache * cout_par_piece)/12) * this.numberOfMonths;
     } else if (type_tache === 'Occasionnelle') {
-      return (nombre_de_tache * cout_par_piece)
-    } 
+        return nombre_de_tache * cout_par_piece;
+    }
+}
+        
+  calculeTacheDate(nombre_de_tache: number, cout_par_piece: number): number{
+    return nombre_de_tache * cout_par_piece;
+  }
+
+  async openPDFDetailsTache() {
+    if (!this.selectedGroup) {
+      return;
+    }
+    const totalHT = this.calculateTotalDepartementTaches(this.selectedGroup.departements);
+    const TVA = 0.19 * totalHT;
+    const timbre = TVA === 0 ? 0 : 1;
+    const montantTotalTTC = totalHT + TVA + timbre;
+    const docDefinition = {
+      content: [
+        {
+          columns: [
+          
+            {
+              width: '100%',
+              text: [
+                { text: 'ZENGroupe\n\n', bold: true },
+                { text: 'ROUTE GREMDA KM 3 CEINTURE BOURGUIBA \n', margin: [0, 10, 0, 0] },
+                '3042 - SFAX\n',
+                { text: 'Tél: (+216) 70147680 \n', margin: [0, 10, 0, 0] },
+                { text: 'Fax: (+216) 74870248 \n', margin: [0, 10, 0, 0] },
+                { text: 'M.F: 1719347/Z/A/M/000 - R.C B08135412021 \n', margin: [0, 10, 0, 0] },
+                { text: 'RIB BANQUE ZITOUNA : 25105000000001014072 \n\n', margin: [0, 10, 0, 0] },
+                { text: `Société ${this.selectedGroup.societe}\n`, alignment: 'right', bold: true },
+                { text: `Date: ${new Date().toLocaleDateString()}\n\n`, alignment: 'right',bold: true },
+              ]
+            },
+          
+          ]
+        },
+        {
+          table: {
+            headerRows: 1,
+            widths: ['*', 'auto', 'auto', 'auto', 'auto'],
+            body: [
+              // Table header
+              ['DESIGNATION', 'Type de tache', 'QUANTITÉ', 'PRIX UNIT. HT', 'PRIX TOTAL. HT'],
+              // Table rows
+              ...this.selectedGroup.departements.reduce((rows: any[], departement: any) => {
+                departement.taches.forEach((tache: any) => {
+                 
+                    const tacheDate = new Date(tache.attributes.date);
+                    const selectedStartDate = new Date(this.startDate);
+                    const selectedEndDate = new Date(this.endDate);
+                    
+                    if (tacheDate >= selectedStartDate && tacheDate <= selectedEndDate) {
+                      rows.push([
+                        tache.attributes.nom_tache,
+                        tache.attributes.type_tache,
+                        tache.attributes.nombre_de_tache,
+                        tache.attributes.cout_par_piece,
+                        this.calculeTacheDate(tache.attributes.nombre_de_tache, tache.attributes.cout_par_piece)
+                      ]);
+                    }
+                
+                });
+                return rows;
+              }, []),
+              ['', '','', { text: 'TOTAL HT', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${totalHT}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }],
+              ['', '','', { text: 'TVA 19%', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${TVA}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }],
+              ['', '','', { text: 'Timbre', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${timbre}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }],
+              ['', '','', { text: 'Montant Total TTC', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${montantTotalTTC}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }]
+            ]
+          },
+          layout: {
+            hLineWidth: (i: number, node: any) => {
+              if (i === 0 || i === 1 ) {
+                return 2; // Apply thicker border for the first two rows and the last two rows
+              } else {
+                return 1; 
+              }
+            },
+            vLineWidth: (i: number, node: any) => {
+              if (i === 0 || i === node.table.body.length) {
+                return 2; // Apply thicker border for the first and last columns
+              } else {
+                return 1; // Remove the border for other columns
+              }},
+            hLineColor: () => 'black',
+            vLineColor: () => 'black'
+          }
+        },
+      
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10]
+        },
+        total: {
+          fontSize: 14,
+          bold: true,
+          margin: [0, 10, 0, 0]
+        }
+      }
+    };
+  pdfMake.createPdf(docDefinition).open();
+  // pdfMake.createPdf(docDefinition).download('facture.pdf');
   }
   openPDFDetailsProjet() {
     if (!this.selectedGroup) {
@@ -95,7 +201,7 @@ selectGroup(group: any) {
     }
     const totalHT = this.calculateTotalDepartmentProjet(this.selectedGroup.data);
     const TVA = 0.19 * totalHT;
-    const timbrE = 1;
+     const timbrE = TVA === 0 ? 0 : 1; // Set timbre based on the value of TVA
     const montantTotalTTC = totalHT + TVA + timbrE;
     const docDefinition = {
       content: [
@@ -136,7 +242,7 @@ selectGroup(group: any) {
               // Total row
               ['', '', { text: 'Total:', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${this.calculateTotalDepartmentProjet(this.selectedGroup.data)}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }],
               ['', '', { text: 'TVA 19%', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${TVA}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }],
-              ['', '', { text: 'Timbre', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `1`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }],
+              ['', '', { text: 'Timbre', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${timbrE}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }],
               ['', '', { text: 'Montant Total TTC', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${montantTotalTTC}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }]
             
             ]
@@ -164,99 +270,6 @@ selectGroup(group: any) {
     };
   
     pdfMake.createPdf(docDefinition).open();
-  }
-  
-  async openPDFDetailsTache() {
-    if (!this.selectedGroup) {
-      return;
-    }
-    const totalHT = this.calculateTotalDepartementTaches(this.selectedGroup.departements);
-    const TVA = 0.19 * totalHT;
-    const timbre = 1;
-    const montantTotalTTC = totalHT + TVA + timbre;
-    const docDefinition = {
-      content: [
-        {
-          columns: [
-          
-            {
-              width: '100%',
-              text: [
-                { text: 'ZENGroupe\n\n', bold: true },
-                { text: 'ROUTE GREMDA KM 3 CEINTURE BOURGUIBA \n', margin: [0, 10, 0, 0] },
-                '3042 - SFAX\n',
-                { text: 'Tél: (+216) 70147680 \n', margin: [0, 10, 0, 0] },
-                { text: 'Fax: (+216) 74870248 \n', margin: [0, 10, 0, 0] },
-                { text: 'M.F: 1719347/Z/A/M/000 - R.C B08135412021 \n', margin: [0, 10, 0, 0] },
-                { text: 'RIB BANQUE ZITOUNA : 25105000000001014072 \n\n', margin: [0, 10, 0, 0] },
-                { text: `Société ${this.selectedGroup.societe}\n`, alignment: 'right', bold: true },
-                { text: `Date: ${new Date().toLocaleDateString()}\n\n`, alignment: 'right',bold: true },
-              ]
-            },
-          
-          ]
-        },
-        {
-          table: {
-            headerRows: 1,
-            widths: ['*', 'auto', 'auto', 'auto', 'auto'],
-            body: [
-              // Table header
-              ['DESIGNATION', 'Type de tache', 'QUANTITÉ', 'PRIX UNIT. HT', 'PRIX TOTAL. HT'],
-              // Table rows
-              ...this.selectedGroup.departements.reduce((rows: any[], departement: any) => {
-                departement.taches.forEach((tache: any) => {
-                  rows.push([
-                    tache.attributes.nom_tache,
-                    tache.attributes.type_tache,
-                    tache.attributes.nombre_de_tache,
-                    tache.attributes.cout_par_piece,
-                    this.calculateTache(tache.attributes.type_tache, tache.attributes.nombre_de_tache, tache.attributes.cout_par_piece)
-                  ]);
-                });
-                return rows;
-              }, []),
-              ['', '','', { text: 'TOTAL HT', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${totalHT}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }],
-              ['', '','', { text: 'TVA 19%', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${TVA}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }],
-              ['', '','', { text: 'Timbre', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `1`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }],
-              ['', '','', { text: 'Montant Total TTC', bold: true, alignment: 'left', margin: [0, 2, 0, 0] }, { text: `${montantTotalTTC}`, bold: true, alignment: 'left', margin: [0, 2, 0, 0] }]
-            ]
-          },
-          layout: {
-            hLineWidth: (i: number, node: any) => {
-              if (i === 0 || i === 1 ) {
-                return 2; // Apply thicker border for the first two rows and the last two rows
-              } else {
-                return 1; 
-              }
-            },
-            vLineWidth: (i: number, node: any) => {
-              if (i === 0 || i === node.table.body.length) {
-                return 2; // Apply thicker border for the first and last columns
-              } else {
-                return 1; // Remove the border for other columns
-              }},
-            hLineColor: () => 'black',
-            vLineColor: () => 'black'
-          }
-        },
-      
-      ],
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 0, 0, 10]
-        },
-        total: {
-          fontSize: 14,
-          bold: true,
-          margin: [0, 10, 0, 0]
-        }
-      }
-    };
-  pdfMake.createPdf(docDefinition).open();
-  // pdfMake.createPdf(docDefinition).download('facture.pdf');
   }
   async addFactureTache(){
     const currentDate = new Date();
@@ -295,12 +308,20 @@ selectGroup(group: any) {
   }
   calculateTotalDepartementTaches(departements: any[]): number {
   let total = 0;
+  const startDate = new Date(this.startDate);
+  const endDate = new Date(this.endDate);
   for (const departement of departements) {
     for (const tache of departement.taches) {
-      const cost = this.calculateTache(tache.attributes.type_tache, tache.attributes.nombre_de_tache, tache.attributes.cout_par_piece);
+      const tacheDate = new Date(tache.attributes.date);
+      if (tacheDate < startDate || tacheDate > endDate){
+        continue; // Skip the tache if it's not within the date range
+      }
+
+      const cost = this.calculeTacheDate(tache.attributes.nombre_de_tache, tache.attributes.cout_par_piece);
       total += cost;
     }
   }
+
   return total;
 }
 
@@ -315,11 +336,13 @@ calculateTotalDepartmentProjet(data: any[]): number {
   let cumulativeTotalCost = 0;
   for (const item of data) {
     for (const projet of item.projets) {
-      cumulativeTotalCost += projet.totalcost;
+      cumulativeTotalCost += parseInt(projet.attributes.estimation_cout, 10);
     }
   }
   return cumulativeTotalCost;
 }
+
+
 
   async getTaches() {
   await this.tacheService.getTachesFacture().then(res => {
@@ -430,7 +453,7 @@ calculateMatchingMonthsAndTotalCost(projet: any) {
   }
   projet.matchingMonths = matchingMonths; 
   projet.costPerMonth = projet.attributes.estimation_cout / projet.numberOfMonths;
-  projet.totalcost = matchingMonths*projet.costPerMonth;
+  projet.totalcost = projet.attributes.estimation_cout;
   this.totalCost = projet.totalcost;
 }
 

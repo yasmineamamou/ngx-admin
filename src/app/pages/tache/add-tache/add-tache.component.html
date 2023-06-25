@@ -39,50 +39,13 @@
                     </ul>
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <div class="form-group">
-                        <label for="name">Date</label>
-                        <input id="name" type="date" class="form-control" [(ngModel)]="newTacheDate" name="newTacheDate">
-                    </div>
-                </td>
-            </tr>
         <tr>
             <td>
                 <ul>
                     <li class="liste">
-                        <div>
-                            <label class="type" for="name">Type de Tache</label>
-                            <ul>
-                                <li>
-                                    <input type="radio" id="Journalier" name="option" value="Journalier" [(ngModel)]="newTacheType">
-                                    <label>Journalier</label>
-                                </li>
-                                <li>
-                                    <input type="radio" id="Hebdomadaire" name="option" value="Hebdomadaire" [(ngModel)]="newTacheType">
-                                    <label>Hebdomadaire</label>
-                                </li>
-                                <li>
-                                    <input type="radio" id="Mensuel" name="option" value="Mensuel" [(ngModel)]="newTacheType">
-                                    <label>Mensuel</label>
-                                </li>
-                                <li>
-                                    <input type="radio" id="Trimestriel" name="option" value="Trimestriel" [(ngModel)]="newTacheType">
-                                    <label>Trimestriel</label>
-                                </li>
-                                <li>
-                                    <input type="radio" id="Semestriel" name="option" value="Semestriel" [(ngModel)]="newTacheType">
-                                    <label>Semestriel</label>
-                                </li>
-                                <li>
-                                    <input type="radio" id="Annuel" name="option" value="Annuel" [(ngModel)]="newTacheType">
-                                    <label>Annuel</label>
-                                </li>
-                                <li>
-                                    <input type="radio" id="Occasionnelle" name="option" value="Occasionnelle" [(ngModel)]="newTacheType">
-                                    <label>Occasionnelle</label>
-                                </li>
-                            </ul>
+                        <div class="form-group">
+                            <label for="name">Date de Tache:</label>
+                            <input id="name" type="date" class="form-control" [(ngModel)]="newTacheDate" name="newTacheDate">
                         </div>
                     </li>
                     <li class="liste">

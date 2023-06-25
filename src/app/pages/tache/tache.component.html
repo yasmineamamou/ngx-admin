@@ -6,9 +6,9 @@
     <tr class="titre">
       <th>Taches</th>
       <th>Description</th>
-      <th>Type</th>
       <th>Nbre de Tache</th>
       <th>C.U</th>
+      <th>Date</th>
       <th>Société bénificiaire</th>
       <th>Département exécutant</th>
     </tr>
@@ -16,11 +16,8 @@
       <td>
         <span>{{tache.attributes.nom_tache}}</span>
       </td>
-      <td style="width: 150px;">
+      <td style="width: 200px;">
         <span>{{tache.attributes.Description}}</span>
-      </td>
-      <td>
-        <span>{{tache.attributes.type_tache}}</span>
       </td>
       <td>
         <span>{{tache.attributes.nombre_de_tache}}</span>
@@ -28,10 +25,13 @@
       <td>
         <span>{{tache.attributes.cout_par_piece}}</span>
       </td>
+     <td>
+        <span>{{tache.attributes.date}}</span>
+      </td>
       <td>
         <span *ngIf="tache.societesList && tache.societesList.attributes.Nom">{{tache.societesList.attributes.Nom}}</span>
       </td>
-      <td>
+      <td style="width: 150px;">
         <span *ngIf="tache.departementsList && tache.departementsList.attributes.nom">{{tache.departementsList.attributes.nom}}</span>
       </td>
       <td>

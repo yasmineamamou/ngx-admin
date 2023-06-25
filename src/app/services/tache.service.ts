@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
-
+import { HttpParams } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
@@ -31,19 +31,30 @@ export class TacheService {
     return promise;
   }
   async getTaches() {
-    let user: any; 
-    await this.userService.getUserById(JSON.parse(sessionStorage.getItem('user')).id).then(res=>{
+    let user: any;
+    await this.userService.getUserById(JSON.parse(sessionStorage.getItem('user')).id).then(res => {
       user = res;
-    })
-    let promise = new Promise<any>((resolve, reject) => {
-      this.http.get(environment.url_backend+'/api/creation-des-taches?filters\[departement\][id][$eq]='+user.departement.id+'&&populate=*').toPromise().then(res => {
-        resolve(res);
-      }).catch(err=>{
-        reject(err);
-      });
     });
+  
+    let promise = new Promise<any>((resolve, reject) => {
+      const apiUrl = environment.url_backend + '/api/creation-des-taches';
+      const params = new HttpParams()
+        .set('filters[departement][id][$eq]', user.departement.id)
+        .set('populate', '*')
+        .set('pagination[limit]', '100'); // Adjust the limit as per your requirement
+  
+      this.http.get(apiUrl, { params }).toPromise()
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  
     return promise;
   }
+  
   async addTache(tacheData) {
     let promise = new Promise<any>((resolve, reject) => {
         this.http.post(environment.url_backend+'/api/creation-des-taches', { data: tacheData }).toPromise().then(res => {

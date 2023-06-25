@@ -22,6 +22,8 @@ export class EditTacheComponent {
   tache: any;
   societesList: any[] = [];
   departementsList: any[] = [];
+  tache_Date: any;
+  editedTachedate: any;
   
   constructor(private tacheService: TacheService, private toastrService: NbToastrService, public dialog: MatDialogRef<TacheComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
   
@@ -31,7 +33,7 @@ export class EditTacheComponent {
       console.log(this.tache)
       this.tache_nom = this.tache.attributes.nom_tache;
       this.tache_description = this.tache.attributes.Description;
-      this.tache_type = this.tache.attributes.type_tache;
+      this.tache_Date = this.tache.attributes.date;
       this.tache_cout = this.tache.attributes.cout_par_piece;
       this.tache_nbre = this.tache.attributes.nombre_de_tache;
       await this.tacheService.getDepartements().then(res => {
@@ -67,7 +69,7 @@ export class EditTacheComponent {
       this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
     }
     else{
-    console.log(this.editedTacheName, this.editedTacheDescription, this.editedTacheCout, this.editedTacheNbre, this.editedTachetype);
+    console.log(this.editedTacheName, this.editedTacheDescription, this.editedTacheCout, this.editedTacheNbre, this.editedTachedate);
     let tacheDepartements: any;
     this.departementsList.forEach(element => {
       if (element.checked == true) {
@@ -84,7 +86,7 @@ export class EditTacheComponent {
       }
     });
     console.log("list tache soci " + tacheSocietes);
-    let TacheData = { nom_tache: this.tache_nom , Description: this.tache_description, cout_par_piece: this.tache_cout, type_tache: this.tache_type, nombre_de_tache: this.tache_nbre, societe: tacheSocietes, departement: tacheDepartements};
+    let TacheData = { nom_tache: this.tache_nom , Description: this.tache_description, cout_par_piece: this.tache_cout, date: this.tache_Date, nombre_de_tache: this.tache_nbre, societe: tacheSocietes, departement: tacheDepartements};
     await this.tacheService.editTache(this.tache.id, TacheData).then(res => {
       console.log("new tache " + res.data);
       this.dialog.close({ success: true, tache: res.data });
