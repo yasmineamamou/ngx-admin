@@ -31,11 +31,17 @@ export class AddSocieteComponent {
         sociType.push(element);
       }
     });
-    if ( sociType.length ==0||this.newSocieteName.trim() ==='' || this.newSocieteDescription.trim() ==='' ){
+    if ( sociType.length ==0||this.newSocieteName.trim() ==='' ){
       this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
     }
     else{
     let societeData = { Nom: this.newSocieteName, Description:this.newSocieteDescription, types: sociType,createdBy: createdBy};
+    const societes = await this.societeService.getSocietes(); 
+    const societeExists = societes.data.some(societe => societe.attributes.Nom === this.newSocieteName);
+    if (societeExists) {
+      this.toastrService.warning("Le nom du societe existe déjà", "Erreur");
+      return;
+    }
     await this.societeService.addSociete(societeData).then(res => {
         console.log("new soc "+res.data);
         this.getTypes();

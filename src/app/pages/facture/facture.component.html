@@ -30,6 +30,7 @@
     <h4>Taches:</h4>
     <tr *ngFor="let group of groupedTaches">
       <ng-container *ngIf="calculateTotalDepartementTaches(group.departements) !== 0">
+        
       <td>
         <h2 (click)="selectGroup(group)">  {{ group.societe }}</h2>
       </td>
@@ -62,7 +63,7 @@
   </ng-container>
 </table>
 <div *ngIf="selectedGroup">
-  <button  id="fixed-button"  class="btn btn-success" (click)="openPDFDetailsProjet()" (click)="openPDFDetailsTache()" (click)="addFactureProjet()" (click)="addFactureTache()">Facture PDF</button>
+  <button  id="fixed-button"  class="btn btn-success"  (click)="openPDFDetailsProjet()"  (click)="addFactureProjet()" (click)="openPDFDetailsTache()"  (click)="addFactureTache()">Facture PDF</button>
 </div>
 <script>
   window.addEventListener('scroll', function() {

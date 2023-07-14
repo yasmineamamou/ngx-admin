@@ -19,6 +19,9 @@ export class TypeService {
     });
     return promise;
   }
+  checkTypeNameExists(typeName: string): Promise<boolean> {
+    return this.http.get<boolean>(environment.url_backend+`/api/types/${typeName}`).toPromise();
+  }
   async getTypes() {
     let promise = new Promise<any>((resolve, reject) => {
       this.http.get(environment.url_backend+'/api/types?populate=*').toPromise().then(res => {

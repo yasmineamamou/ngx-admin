@@ -10,9 +10,9 @@ export class FactureService {
   constructor(private http: HttpClient) { }
   uploadPDFToStrapi(file: File): Observable<any> {
     const formData = new FormData();
-    formData.append('files', file);
+    formData.append('files', file, 'facture.pdf');
   
-    return this.http.post(environment.url_backend + '/upload', formData);
+    return this.http.post(environment.url_backend + '/api/upload/', formData);
   }
   
   async addFacture(factureData) {

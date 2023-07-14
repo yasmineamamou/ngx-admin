@@ -12,8 +12,8 @@
       <th>Société bénificiaire</th>
       <th>Département exécutant </th>
     </tr>
-    <tr *ngFor="let projet of projet_nom | paginate: { itemsPerPage: 10, currentPage: p }">
-      <td>
+    <tr style="height: 50px;" *ngFor="let projet of projet_nom | paginate: { itemsPerPage: 10, currentPage: p }">
+      <td style="width: 300px;">
         <span>{{projet.attributes.nom_projet}}</span>
       </td>
       <td>

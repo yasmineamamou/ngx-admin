@@ -47,11 +47,12 @@ export class AddUserComponent {
     let email = this.userForm.controls.email.value;
     let password = this.userForm.controls.password.value;
     let telephone = this.userForm.controls.telephone.value;
-    if (username ==='' ||  email ==='' || password ==='' ){
+    if (username ==='' ||  email ==='' || password ==='' || telephone ==0 || userDepartements.length ==0 ){
       this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
     }
     else{
     let UserData = { username: username, telephone: Number(telephone), email: email , password: password, role: 3, departement: userDepartements.id};
+ 
     await this.UserService.addUser(UserData).then(res => {
       console.log("new comp "+res.data);
         /*this.getDepartements();

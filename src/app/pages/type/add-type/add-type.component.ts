@@ -18,20 +18,32 @@ export class AddTypeComponent {
   ngOnInit() {
   }
   async addType() {
-    if (this.newTypeName.trim() ==''){
+    if (this.newTypeName.trim() == '') {
       this.toastrService.warning("Erreur!! Veuillez écrire quelque chose", "Champs obligatoires");
+    } else {
+      console.log(this.newTypeName);
+      let typeData = { type: this.newTypeName };
+  
+      // Check if the type name already exists
+      const types = await this.typeService.getTypes(); // Assuming you have a method in typeService to fetch the existing types
+      const typeExists = types.data.some(type => type.attributes.type === this.newTypeName);
+      if (typeExists) {
+        this.toastrService.warning("Le nom du type existe déjà", "Erreur");
+        return;
+      }
+  
+      await this.typeService.addType(typeData)
+        .then(res => {
+          console.log("new typ " + res.data);
+          this.newTypeName = "";
+          this.dialog.close({ success: true, type: res.data });
+          this.toastrService.success("Type créé", "Création");
+        })
+        .catch(err => {
+          this.toastrService.danger("Erreur!! Impossible de créer le type", "Erreur");
+          this.errorMessage = "Vous n'avez pas le droit pour cette action.";
+        });
     }
-    else{
-    console.log(this.newTypeName);
-    let typeData = { type: this.newTypeName};
-    await this.typeService.addType(typeData).then(res => {
-      console.log("new typ "+res.data);
-        this.newTypeName = ""
-        this.dialog.close({ success: true, type: res.data });
-        this.toastrService.success("Type crée", "Création");
-    }).catch(err => {
-         this.toastrService.danger("Erreur!! can't create type", "Erreur");
-         this.errorMessage = "Vous n'avez pas le droit pour cette action.";
-    });}
   }
+  
 }

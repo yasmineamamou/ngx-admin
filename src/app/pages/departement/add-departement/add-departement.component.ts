@@ -31,6 +31,12 @@ export class AddDepartementComponent {
     }
     else{
     let departementData = { nom: this.newDepName, societe: depSocietes};
+    const departements = await this.departementService.getDepartements(); 
+    const departementExists = departements.data.some(departement => departement.attributes.nom === this.newDepName);
+    if (departementExists) {
+      this.toastrService.warning("Le nom du departement existe déjà", "Erreur");
+      return;
+    }
     await this.departementService.addDepartement(departementData).then(res => {
       console.log("new dep " + res.data);
       this.getSocietes();
